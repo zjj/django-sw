@@ -1,0 +1,28 @@
+<html>
+<head>
+<title>Log in</title>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/static/admin/css/login.css" />
+</head>
+
+<body class="login">
+<h1>Login</h1>
+<center>
+<div id="container">
+<form action="/login/" method="post" id="login-form">
+    <div class="form-row">
+        <label class="required">Username:</label><input type="text" name="username" id="id_username" />
+    </div>
+    <div class="form-row">
+        <label class="required">Password:</label> <input type="password" name="password" id="id_password" />
+    </div>
+    <input type="hidden" name="next" value="{{next}}" />
+    <div class="submit-row">
+        <input type="submit" value="登录" /> <a href="/register">注册</a>
+     </div>
+</form>
+</div>
+</center>
+</body>
+</html>
+

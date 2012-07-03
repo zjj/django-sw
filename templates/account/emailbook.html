@@ -1,0 +1,54 @@
+<html lang="en-us">
+<head>
+<title>地址簿</title>
+<meta http-equiv="content-type" contentx="text/html; charset=utf-8"/>
+<script language="javascript">
+function selectUser()
+{
+    var pre=self.opener.document.getElementById("persons_involved_fake").value;
+    var pre1=self.opener.document.getElementById("persons_involved").value;
+    var s = document.getElementsByName("users");
+    for (var i=0; i<s.length; i++)
+        if(s[i].checked){
+            var index = pre.indexOf(s[i].value);
+            if (index == -1){
+                pre+=s[i].value;
+                pre1+=s[i].id;
+                }
+            }
+        else{
+            var index = pre.indexOf(s[i].value);
+            if (index != -1){
+                pre=pre.replace(s[i].value,"");
+                pre1=pre1.replace(s[i].id,"");
+                }
+            }
+    self.opener.document.getElementById("persons_involved_fake").value=pre;
+    self.opener.document.getElementById("persons_involved").value=pre1;
+    self.close();
+}
+
+function closewindow()
+{
+    if (!document.hasFocus())
+        self.close();
+}
+</script>
+</head>
+<body>
+    {% for i in list %}
+    <input type="checkbox" name="users" id="{{i.username}};" value="{{i.first_name}};" />{{i.first_name}}<br>
+    {%endfor%}
+    <input type="button" onclick="selectUser()" value="确认"/>
+    <script type="text/javascript">
+    var pre=self.opener.document.getElementById("persons_involved_fake").value;
+    var s = document.getElementsByName("users");
+    for (var i=0; i<s.length; i++){
+        var index = pre.indexOf(s[i].value);
+        if (index != -1)
+            s[i].checked=true;
+        }
+     timer = window.setInterval("closewindow()",500); 
+     </script>
+</body>
+</html>

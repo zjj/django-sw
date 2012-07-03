@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>Register</title>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+<script type="text/javascript">
+function samepasswd()
+{
+var passwd1=document.getElementById("password").value
+var passwd2=document.getElementById("password_confirm").value
+if (passwd1 != passwd2){
+    alert("两次输入的密码不一样，请重新注册!")
+    return false
+    }
+return true
+}
+</script>
+
+</head>
+<body class="">
+<h1>注册</h1>
+<form action="/register/" method="POST" onsubmit="return samepasswd()"><div style='display:none'><input type='hidden'/></div>
+<div>
+    <fieldset class="module aligned">
+        <div class="form-row">
+         建议"用户名"使用中文名简称，和公司邮箱用户的命名相同。<br>
+         如中文名:钟佳佳,相应的用户名:zhongjj 只是建议，方便别人查找.
+         </div>
+        <div class="form-row">
+            <label class="required">用户名:</label><input type="text" name="username" /><font color="red">*</font>
+        </div>
+        <div class="form-row">
+            <label class="required">中文名:</label><input type="text" name="first_name" /><font color="red">*</font>(真实的中文名)
+        </div>
+        <div class="form-row">
+            <label class="required">部门:</label>
+            <select name="group">
+            {% for group in groups%}
+                <option value="{{group}}">{{group}}</option>
+            {%endfor%}
+            </select>
+        </div>
+        <div class="form-row">
+            <label class="required">邮箱:</label><input type="text" name="email" /><font color="red">*</font>
+        </div>
+        <div class="form-row">
+            <label class="required">密码:</label><input id="password" type="password" name="password" /><font color="red">*</font>
+        </div>
+        <div class="form-row">
+            <label class="required">密码确认:</label><input id="password_confirm" type="password" name="password_confirm" /><font color="red">*</font>
+            <p>请两次输入相同的密码!</p>
+        </div>
+    </fieldset>
+<div >
+    <input type="submit" value="注册" />
+</div>
+</form>
+</body>
+</html>
+
