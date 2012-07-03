@@ -1,0 +1,40 @@
+<html lang="en-us">
+<head>
+<title>需求确认</title>
+<meta http-equiv="content-type" contentx="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="/static/admin/css/dashboard.css" />
+</head>
+<body class="change-form">
+{% include "jforms/toolbar.html" %}
+<h1>需求确认({{index}})</h1>
+<form method="POST" action="/requirementconfirm/{{username}}/{{index}}/">
+<input type="hidden" name="agent" value="{{agent}}" />
+<fieldset class="module aligned">
+        {% if agent == "yes" %}
+        <div class="form-row">
+        <label></label>
+        <font color=red>警告:非部门经理本人，如未和部门经理沟通，请不要代签</font>
+        </div>
+        {%endif%}
+        <div class="form-row">
+            <label></label>
+            <input type="radio" onclick="document.getElementById('txt').disabled=true" name="result" value="accept" checked="true"  /> 同意
+            <input type="radio" onclick="document.getElementById('txt').disabled=false" name="result" value="reject" /> 拒绝
+            <a href="/viewrequirement/{{index}}/">查看需求详情</a>
+        </div>
+        <div class="form-row">
+        {% if agent != "yes" %}
+        <label>意见:</label><textarea  disabled=true id='txt' name="txt" rows="5" cols="20" onfocus="if(value=='如拒绝，请填写'){value=''}">如拒绝，请填写</textarea>
+        {% else%}
+        <label>意见:</label><textarea  disabled=true id='txt' name="txt" rows="5" cols="20" onfocus="if(value=='如拒绝，请转写您和部门经理之间沟通。'){value=''}">如拒绝，请转写您和部门经理之间沟通。</textarea>
+        {%endif%}
+        </div> 
+        <div class="form-row">
+           <label></label> <input type="submit" value="确认" />
+        </div>
+</fieldset>
+</form>
+</body>
+</html>

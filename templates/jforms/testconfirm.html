@@ -1,0 +1,23 @@
+<html lang="en-us">
+<head>
+<title>评审会签</title>
+<meta http-equiv="content-type" contentx="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="/static/admin/css/dashboard.css" />
+</head>
+<body class="change-form">
+{% include "jforms/toolbar.html" %}
+<h1>评审会签</h1>
+<form method="POST" action="">
+<fieldset class="module aligned">
+        <div class="form-row">
+            <label class="required">Password:</label> <input type="password" name="password" id="id_password" />
+             <a href="/viewrequirement/{{index}}/">查看需求详情</a>
+        <div class="form-row">
+           <label></label> <input type="submit" value="确认" />
+        </div>
+</fieldset>
+</form>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<html lang="en-us">
+<head>
+<title>软件需求表与评估表({{index}})</title>
+{% include "jforms/head.html" %}
+{% include "jforms/mce_init.html" %}
+</head>
+<body class="change-form">
+{% include "jforms/toolbar.html" %}
+<fieldset class="module aligned">
+<h1>需求评审(需求编号:{{index}})</h1>
+<div class="form-row">
+{{rjef.judgement.label_tag}}
+{{rjef.judgement}}
+</div>
+<div class="form-row">
+{{rjef.result.label_tag}}
+{{rjef.result}}
+</div>
+<div class="form-row">
+{{rjef.judges.label_tag}}
+{% for i in confirm %}
+    {% if i.signed %}
+        <font color=green> {{i.user.username}},</font>
+    {% else %}
+        <a href="/judgerequirementconfirm/{{i.user.username}}/{{index}}"> {{i.user.first_name}},</a>
+    {% endif %}
+{%endfor%}
+</div>
+</fieldset>
+</body>

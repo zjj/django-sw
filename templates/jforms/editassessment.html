@@ -1,0 +1,39 @@
+<html lang="en-us">
+<head>
+<title>软件需求表与评估表({{index}})</title>
+{% include "jforms/head.html" %}
+{% include "jforms/mce_init.html" %}
+</head>
+<body class="change-form">
+{% include "jforms/toolbar.html" %}
+<fieldset class="module aligned">
+<h1>风险评估(需求编号:{{index}})</h1>
+<br>
+<form method="post" action="">
+<div class="form-row">
+{{assessment.assessment.label_tag}}
+{{assessment.assessment}}
+{{assessment.errors.assessment}}
+</div>
+<div class="form-row">
+<label></label>
+{% if not req.only_predev %}
+    {{assessment.need_predev}}{{assessment.need_predev.label}}
+    {{assessment.need_test}}{{assessment.need_test.label}}
+{% endif %}
+{% if not req.need_test and req.only_predev %}
+    {{assessment.need_test}}{{assessment.need_test.label}}
+{% endif %}
+</div>
+<div class="form-row">
+{{assessment.assessor.label_tag}}
+{{assessment.assessor}}
+{{assessment.errors.assessor}}
+</div>
+<div class="form-row">
+   <label></label> <input type="submit" value="保存" />
+   <input type="checkbox" name="stat" value="locked" />Lock
+</div>
+</form>
+</fieldset>
+</body>

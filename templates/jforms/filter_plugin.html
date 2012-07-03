@@ -1,0 +1,36 @@
+<form method="GET" action="/filter/">
+<fieldset class="module aligned">
+<h1>过滤:</h1>
+        <div class="form-row">
+                所属项目
+                <select name="project">
+                <option value="none">不限</option>
+                {% for i in project_list%}
+                <option value="{{i}}">{{i}}</option>
+                {% endfor %}
+                </select>
+
+                软件类型
+                <select name="software_type">
+                <option value="none">不限</option>
+                {% for i in software_list%}
+                <option value="{{i}}">{{i}}</option>
+                {% endfor %}
+                </select>
+                
+                硬件类型
+                <select name="hardware">
+                <option value="none">不限</option>
+                {% for i in hardware_list%}
+                <option value="{{i}}">{{i}}</option>
+                {% endfor %}
+                </select>
+        </div>
+        <div class="form-row">
+                需求时间
+                <input type="text" class="vDateField" size="10" name="start_date" />
+                ～
+                <input type="text" class="vDateField" size="10" name="end_date" />
+                <input type="submit" value="筛选" />
+        <div>
+</fieldset>

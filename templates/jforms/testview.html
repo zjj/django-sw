@@ -1,0 +1,66 @@
+<html lang="en-us">
+<head>
+<meta http-equiv="content-type" contentx="text/html; charset=utf-8"/>
+<title>测试评审,编号:{{index}}</title>
+{% include "jforms/head.html" %}
+{% include "jforms/mce_init.html" %}
+</head>
+<body class="change-form">
+{% include "jforms/toolbar.html" %}
+<h1>测试评审,需求表编号:{{index}}</h1>
+<form enctype="multipart/form-data" method="POST" action="">
+<fieldset class="module aligned">
+<div class="form-row">
+<label>需求表序列号：</label>
+ {{index}} 
+</div>
+
+<div class="form-row">
+<label></label>
+<p>
+测试申请: <a href="{{testapply.url}}">{{testapply.name}}</a></br>
+测试报告: <a href="{{testreport.url}}">{{testreport.name}}</a></br>
+</p>
+</div>
+
+<div class="form-row">
+<label>{{test.overview.label_tag}}</label>
+{{test.overview}}
+</div>
+
+<div class="form-row">
+<label>{{test.judgement.label_tag}}</label>
+{{test.judgement}}
+</div>
+
+<div class="form-row">
+<label></label>
+{{test.result}}
+</div>
+
+<div class="form-row">
+<label>{{test.date.label_tag}}</label>
+{{test.date}}
+</div>
+
+<div class="form-row">
+<label>{{test.explain.label_tag}}</label>
+{{test.explain}}
+</div>
+
+<div class="form-row">
+<label>评审人员:</label>
+{% for i in judges%}
+    {% if i.signed %}
+        <font color=green> {{i.signature.first_name}} </font>
+    {%else%}
+        <a href="/testjudegeconfirm/{{i.signature.username}}/{{index}}"> {{i.signature.first_name}} </a>
+    {%endif%}
+{%endfor%}
+<p>
+(帮助: <font color=green>绿色:已会签</font>，<font color=blue>蓝色:未操作</font>)
+</div>
+
+</fieldset>
+</body>
+</html>
