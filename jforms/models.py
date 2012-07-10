@@ -139,13 +139,13 @@ class DevJudgement(models.Model):
     stat = models.CharField(max_length=10) # unlocked  locked
 
 class TestJudgement(models.Model):
-    predevjudge = models.ForeignKey(DevJudgement,null=True) #***here ,should PreDevJudgement***
+    predevjudge = models.ForeignKey(DevJudgement,null=True,related_name="+") #***here ,should PreDevJudgement***
     devjudge = models.ForeignKey(DevJudgement,null=True)
-    author = models.CharField(max_length=100)
+    author = models.ForeignKey(User) 
     overview = models.TextField()
     judgement = models.TextField()
     result = models.CharField(max_length=100)
-    judges = models.CharField(max_length=1000)
+    judges = models.ManyToManyField(User,related_name="++++++")
     date = models.DateTimeField(null=True)
     explain = models.TextField(null=True)
     time = models.DateTimeField(auto_now=True)
@@ -154,6 +154,9 @@ class TestJudgement(models.Model):
     testreport = models.FileField(upload_to="files/%Y/%m/%d")
 
 class TestJudgementConfirm(models.Model):
+    predevjudge = models.ForeignKey(DevJudgement,null=True,related_name="+") #***here ,should PreDevJudgement***
+    devjudge = models.ForeignKey(DevJudgement,null=True)
+    testjudge = models.ForeignKey(TestJudgement,null=True)
     signature = models.ForeignKey(User)
     signed = models.BooleanField() 
     time = models.DateTimeField(auto_now=True)

@@ -46,7 +46,7 @@ class RequirementEditForm(ModelForm):
     details = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 20}),label="需求规格:",required = False)
     only_predev = forms.BooleanField(label="仅预研",required = False) 
     need_test = forms.BooleanField(label="需测试",required = False)
-    expired_date = forms.CharField(widget=forms.DateTimeInput(attrs={'class':"vDateField"}),label="需求时间:",required = True)
+    expired_date = forms.CharField(widget=forms.DateTimeInput(format="%Y-%m-%d",attrs={'class':"vDateField"}),label="需求时间:",required = True)
     executer = myModelMultipleChoiceField(widget=CheckboxSelectMultiple,queryset=User.objects.all(),label="需求接口人:",required = False)
     cc = myModelMultipleChoiceField(widget=CheckboxSelectMultiple,queryset=User.objects.all(),label="其他通知人员:",required = False)
     
@@ -106,4 +106,21 @@ class DevJudgeEditForm(ModelForm):
         model = RequireJudgement
         fields = ("bg","testinside","judgement","result","judges")
 
+
+TEST_RESULT_CHOICES = (('success','研发完成,需求结束'),
+                  ('failure','研发放弃'),
+                  ('amend', '需修正,继续研发'))
+
+class TestJudgeEditForm(ModelForm):
+    overview = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 10}),label="测试评审结论:")
+    result = forms.ChoiceField(widget=Select,choices=TEST_RESULT_CHOICES,required = True)
+    judgement = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 20}),label="评审记录:")
+    date = forms.CharField(widget=forms.DateTimeInput(format="%Y-%m-%d",attrs={'class':"vDateField"}),label="完成时间:",required = True)
+    explain = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 10}),label="解释:")
+    judges = myModelMultipleChoiceField(widget=CheckboxSelectMultiple,queryset=User.objects.all(),label="评审人员:",required = False)
+    testapply = forms.FileField(required=True)
+    testreport = forms.FileField(required=True)
+    class Meta:
+        model = TestJudgement
+        fields = ("overview","result","judgement","date","explain","judges","testapply","testreport")
 

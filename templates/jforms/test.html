@@ -1,0 +1,65 @@
+<html lang="en-us">
+<head>
+<meta http-equiv="content-type" contentx="text/html; charset=utf-8"/>
+<title>测试评审,编号:{{index}}</title>
+{% include "jforms/head.html" %}
+{% include "jforms/mce_init.html" %}
+</head>
+<body class="change-form">
+{% include "jforms/toolbar.html" %}
+<h1>测试评审,需求表编号:{{index}}</h1>
+<form enctype="multipart/form-data" method="POST" action="">
+<fieldset class="module aligned">
+<div class="form-row">
+<label>需求表序列号：</label>
+ {{index}} 
+</div>
+
+<div class="form-row">
+<label></label>
+<p>
+测试申请:{{test.testapply}}</br>
+测试报告:{{test.testreport}}
+</p>
+{{test.errors.testapply}}{{test.errors.testreport}}
+</div>
+
+<div class="form-row">
+<label>{{test.overview.label_tag}}</label>
+{{test.overview}}
+{{test.errors.overview}}
+</div>
+
+<div class="form-row">
+<label>{{test.judgement.label_tag}}</label>
+{{test.judgement}}
+{{test.errors.judgement}}
+</div>
+
+<div class="form-row">
+<label></label>
+{{test.result}}
+</div>
+
+<div class="form-row">
+<label>{{test.date.label_tag}}</label>
+{{test.date}}
+</div>
+
+<div class="form-row">
+<label>{{test.explain.label_tag}}</label>
+{{test.explain}}
+</div>
+
+<div class="form-row">
+<label>{{test.judges.label_tag}}</label>
+{{test.judges}}
+</div>
+
+<div class="form-row">
+<label></label> <input type="submit" value="提交" />
+<input type="checkbox" name="stat" value="prelocked" /><font color="red">Lock (如测试评审定稿，请锁住)</font>
+</div>
+</fieldset>
+</body>
+</html>

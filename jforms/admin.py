@@ -25,3 +25,5 @@ class History_c(admin.ModelAdmin):
 admin.site.register(History,History_c)
 admin.site.register(RequireJudgementConfirm)
 admin.site.register(Development)
+admin.site.register(TestJudgement)
+admin.site.register(TestJudgementConfirm)
