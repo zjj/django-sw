@@ -1,0 +1,30 @@
+<html lang="en-us">
+<head>
+<title>软件需求表与评估表({{index}})</title>
+{% include "jforms/head.html" %}
+{% include "jforms/mce_init.html" %}
+</head>
+<body class="change-form">
+{% include "jforms/toolbar.html" %}
+<fieldset class="module aligned">
+<h1>需求评审(需求编号:{{index}})</h1>
+<form method="post" action="">
+<div class="form-row">
+{{rjef.judgement.label_tag}}
+{{rjef.judgement}}
+</div>
+<div class="form-row">
+{{rjef.result.label_tag}}
+{{rjef.result}}
+</div>
+<div class="form-row">
+{{rjef.judges.label_tag}}
+{{rjef.judges}}
+</div>
+<div class="form-row">
+<label></label>
+<input type="submit" value="保存" /> <input type="checkbox" name="stat" value="prelocked" />Lock
+</div>
+</form>
+</fieldset>
+</body>

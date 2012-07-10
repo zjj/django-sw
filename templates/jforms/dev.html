@@ -1,0 +1,29 @@
+<html lang="en-us">
+<head>
+<title>软件设计与实施记录(研发),编号:{{index}}</title>
+{% include "jforms/head.html" %}
+{% include "jforms/mce_init.html" %}
+</head>
+<body class="change-form">
+{% include "jforms/toolbar.html" %}
+<h1>软件设计与实施记录(研发阶段),需求表编号:{{index}}</h1>
+<form method="POST" action="">
+<fieldset class="module aligned">
+        <div class="form-row">
+            <label>需求表序列号:</label><input type="text" name="" value="{{index}}"> 
+            <a href="/viewrequirement/{{index}}/">查看详情</a>
+        </div>
+        <div class="form-row">
+            <label>背景与开发环境:</label><textarea name="bg" cols="80" rows="20">{{dev.bg}}</textarea>
+        </div>
+        <div class="form-row">
+            <label>设计描述与实施记录:</label><textarea name="design" cols="80" rows="20">{{dev.design}}</textarea>
+        </div>
+        <div class="form-row">
+           <label></label> <input type="submit" value="提交" />
+           <input type="checkbox" name="stat" value="locked" /><font color="red">Lock (如结束研发阶段，请锁住)</font>
+        </div>
+</fieldset>
+</form>
+</body>
+</html>

@@ -1,4 +1,4 @@
-from jforms.models import Requirement,Hardware, Project, SoftwareType, Dept
+from jforms.models import *
 from django.contrib import admin
 admin.site.register(Requirement)
 admin.site.register(SoftwareType)
@@ -13,3 +13,15 @@ admin.site.register(Project,Project_c)
 class Dept_c(admin.ModelAdmin):
     list_display = ['group']
 admin.site.register(Dept, Dept_c)
+class RC_c(admin.ModelAdmin):
+    list_display = ['requirement','signature','whosigned','accept','signed']
+    fields = ['requirement','signature','whosigned','accept','reason','signed']
+admin.site.register(RequirementConfirm,RC_c)
+admin.site.register(Assessment)
+
+class History_c(admin.ModelAdmin):
+    fields = ['requirement','stage','statchange','message']
+    list_display = fields
+admin.site.register(History,History_c)
+admin.site.register(RequireJudgementConfirm)
+admin.site.register(Development)

@@ -1,0 +1,38 @@
+<html lang="en-us">
+<head>
+<title>软件部内部验证,编号:{{index}}</title>
+{% include "jforms/head.html" %}
+{% include "jforms/mce_init.html" %}
+</head>
+<body class="change-form">
+{% include "jforms/toolbar.html" %}
+<h1>软件部内部验证,需求表编号:{{index}}</h1>
+<form method="POST" action="">
+<fieldset class="module aligned">
+        <div class="form-row">
+            <label>需求表序列号:</label> {{index}} 
+            <a href="/viewrequirement/{{index}}/">查看详情</a>
+        </div>
+        <div class="form-row">
+            <label>{{devjudge.bg.label_tag}}</label>{{devjudge.bg}}
+        </div>
+        <div class="form-row">
+            <label>{{devjudge.testinside.label_tag}}</label>{{devjudge.testinside}}
+        </div>
+        <div class="form-row">
+            <label>{{devjudge.judgement.label_tag}}</label>{{devjudge.judgement}}
+        </div>
+        <div class="form-row">
+            <label>{{devjudge.result.label_tag}}</label>{{devjudge.result}}
+        </div>
+        <div class="form-row">
+            <label>{{devjudge.judges.label_tag}}</label>{{devjudge.judges}}
+        </div>
+        <div class="form-row">
+           <label></label> <input type="submit" value="提交" />
+           <input type="checkbox" name="stat" value="locked" /><font color="red">Lock (如结束研发阶段，请锁住)</font>
+        </div>
+</fieldset>
+</form>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<html lang="en-us">
+<head>
+<title>软件需求表与评估表({{index}})</title>
+{% include "jforms/head.html" %}
+{% include "jforms/mce_init.html" %}
+</head>
+<body class="change-form">
+{% include "jforms/toolbar.html" %}
+<fieldset class="module aligned">
+<h1>软件需求与规格({{index}})</h1>
+<div class="form-row">
+{{requirement.require_name.label_tag}}{{requirement.require_name}} {{requirement.project}} {{requirement.software_type}} {{requirement.hardware}}
+</div>
+<div class="form-row">
+{{requirement.describle.label_tag}}{{requirement.describle}}
+</div>
+<div class="form-row">
+{{requirement.details.label_tag}}{{requirement.details}}
+</div>
+<div class="form-row">
+<label></label>{{requirement.only_predev}}{{requirement.only_predev.label}}  {{requirement.need_test}}{{requirement.need_test.label}}
+</div>
+<div class="form-row">
+{{requirement.expired_date.label_tag}}{{requirement.expired_date}}
+</div>
+<div class="form-row">
+{{requirement.executer.label_tag}}
+{% for i in executer.values%}
+    {{i.first_name}},
+{%endfor%}
+</div>
+<div class="form-row">
+{{requirement.cc.label_tag}}
+{% for i in cc.values%}
+    {{i.first_name}},
+{%endfor%}
+</div>
+<div class="form-row">
+<label>需求确认状态:</label>
+         {% for r in rc%}
+             {% if r.signed %}
+                {%if r.accept %}
+                    {%if r.signature == r.whosigned%}
+                        <font color="green">{{r.signature.first_name}},</font>
+                    {%else%}
+                        <font color="green">{{r.signature.first_name}}(由 {{r.whosigned.first_name}} 代签),</font>
+                    {%endif%}
+                {%else%}
+                    {%if r.signature == r.whosigned%}
+                        <font color="red">{{r.signature.first_name}},</font>
+                    {%else%}
+                        <font color="red">{{r.signature.first_name}}(由 {{r.whosigned.first_name}} 代签),</font>
+                    {%endif%}
+                {%endif%}
+             {%else%}
+                  <a href="/requirementconfirm/{{r.signature.username}}/{{index}}">{{r.signature.first_name}} </a>,
+             {%endif%}
+         {%endfor%}
+        <br>
+         (帮助: <font color=green>绿色:同意</font>，<font color=red>红色:拒绝</font>，<font color=blue>蓝色:未操作</font>)
+        <br>
+        {% for r in rc%}
+            {%if r.signed and not r.accept%}
+            <label></label>{{r.whosigned.first_name}} <font color="red">拒绝意见: {{r.reason}}</font> <br>
+            {%endif%}
+        {%endfor%}
+</div>          
+
+</fieldset>
+</body>
