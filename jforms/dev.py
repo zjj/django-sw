@@ -36,17 +36,6 @@ def dev(request, index):
         p = Development(requirement=r,author=author,bg=bg,design=design,stat=stat)
         p.save()
         if stat == "locked":
-        #    if True:
-        #        q = Q(version__isnull=False)
-        #        d = Development.objects.filter(q)
-        #        if len(d) == 0:
-        #            p.version=1
-        #            p.save()
-        #        else:
-        #            last = d[len(d)-1]
-        #            p.version = last.version+1
-        #            p.save()
-        # the code here could be used in test judgement function,gaga
             return render_to_response("jforms/message.html",{"message":"本次研发结束"})
         return render_to_response("jforms/message.html",{"message":"本次已经保存，下次可继续进行修改",})
     
@@ -60,7 +49,7 @@ def dev(request, index):
             content.update({"message":"研发已结束,需求处于后续评审中，无法进行修改",})
             return render_to_response("jforms/message.html",content)
         else:     
-            content.update({"dev":j})
+            content.update({"dev":d})
     return render_to_response('jforms/dev.html',content)
 
 #内部验证(研发评审)

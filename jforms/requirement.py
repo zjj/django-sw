@@ -278,7 +278,10 @@ def editassessment(request,index):
                     statchange = stat 
                     log = History(requirement=r,stage=stage,statchange=statchange,message=message)
                     log.save()
-                    
+                
+            content.update({"message":"评估已保存"})
+            return render_to_response('jforms/message.html',content)
+            
     r = Requirement.objects.filter(index=index)
     if len(r)!=0:
         r = r[len(r)-1]

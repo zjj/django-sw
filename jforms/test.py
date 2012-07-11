@@ -100,7 +100,6 @@ def testjudge(request,index):
     content.update({"test":test,})
     return render_to_response('jforms/test.html',content)
 
-
 def testjudgeconfirm(request, username, index):
     content={}
     content.update({"index":index})
@@ -131,11 +130,26 @@ def testjudgeconfirm(request, username, index):
             if done == True:
                 tj.stat = "locked"
                 tj.save()
+                #log
                 stage = u"test_judge"
                 message = u"judgement signature done:%s"%tj.result
                 statchange = tj.stat 
                 log = History(requirement=r,stage=stage,statchange=statchange,message=message)
                 log.save()
+                
+                if tj.result == "amend":
+                    q = Q(version__isnull=False)
+                    last_d = Development.objects.filter(q)
+                    if len(last_d) == 0:
+                        d.version=1
+                        d.ifpass = False
+                        d.save()
+                    else:
+                        last = last_d[len(last_d)-1]
+                        d.version = last.version+1
+                        d.ifpass = False
+                        d.save()
+                   
             content.update({"message":"测试评审会签成功"})
             return render_to_response("jforms/message.html",content);
         else:
@@ -162,9 +176,19 @@ def testjudgeview(request,index):
     dj = dj[len(dj)-1]
     tj = TestJudgement.objects.filter(devjudge=dj)
     tj = tj[len(tj)-1]
+    testapply = {}
+    testreport = {}
+    testapply["url"] = tj.testapply.url
+    testapply["name"] = tj.testapply.name.split("/")[-1]
+    testreport["url"] = tj.testreport.url
+    testreport["name"] = tj.testreport.name.split("/")[-1]
+    content.update({"testapply":testapply})
+    content.update({"testreport":testreport})
+    s = TestJudgementConfirm.objects.filter(testjudge=tj)
+    content.update({"judges":s}) 
     test = TestJudgeEditForm(instance=tj)
     content.update({"test":test,})
-    return render_to_response('jforms/test.html',content)
+    return render_to_response('jforms/testview.html',content)
 
 
     
