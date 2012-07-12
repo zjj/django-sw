@@ -164,8 +164,11 @@ def devjudge(request,index):
                 
                 stage = u"dev" 
                 message = u"devjudge was locked by %s"%request.user.username
-                html = u'研发评审中 <a href="/viewdevjudge/%s/">查看研发评审</a> <a href="/viewdev/%s">查看研发</a> <sup><font color=red>第%s次修正</font></sup> \
-                        <a href="/history/%s/"><sup> 历史</sup></a>'%(index,index,version,index)
+                if version == "":
+                    html = u'研发评审中 <a href="/viewdevjudge/%s/">查看研发评审</a> <a href="/viewdev/%s">查看研发</a>'%(index,index)
+                else:
+                    html = u'研发评审中 <a href="/viewdevjudge/%s/">查看研发评审</a> <a href="/viewdev/%s">查看研发</a> <sup><font color=red>第%s次修正</font></sup> \
+                            <a href="/history/%s/"><sup> 历史</sup></a>'%(index,index,version,index)
                 log = History(requirement=r[len(r)-1],stage=stage,stat=stat,message=message,html=html,finished=False)
                 log.save()
 
