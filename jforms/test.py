@@ -200,7 +200,7 @@ def testjudgeconfirm(request, username, index):
                     if tj.result == "failure":
                         stage = u"dev"
                         message = u"testjudge signature done: %s "%tj.result
-                        if version == ""
+                        if version == "":
                             html = u'<font color=red>研发失败,需求放弃</font><a href="/testjudgeview/%s">查看测试评审</a> <a href="/viewdev/%s">查看研发</a> \
                                     <a href="/viewdevjudge/%s/">查看研发评审</a>'%(index,index,index)
                         else:
