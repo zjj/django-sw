@@ -140,6 +140,14 @@ class DevJudgement(models.Model):
     time = models.DateTimeField(auto_now=True)
     stat = models.CharField(max_length=10) # unlocked  locked
 
+class DevJudgementConfirm(models.Model):
+    devjudge = models.ForeignKey(DevJudgement)
+    user = models.ForeignKey(User)
+    time = models.DateTimeField(auto_now=True)
+    signed = models.BooleanField() 
+    class Meta:
+        unique_together = ('devjudge', 'user')
+
 #软件设计与实施记录 预研
 class PreDevelopment(models.Model):
     requirement = models.ForeignKey(Requirement)

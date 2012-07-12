@@ -18,6 +18,12 @@ def testjudge(request,index):
     content.update({"username":request.user.first_name})
     r = Requirement.objects.filter(index=index)
     r = r[len(r)-1]
+
+    h = History.objects.filter(require=r,finished=True)
+    if len(h) != 0:
+        content.update({"message":"该需求已结束",})
+        return render_to_response("jforms/message.html",content)
+
     d = Development.objects.filter(requirement=r)
     d = d[len(d)-1]
     dj = DevJudgement.objects.filter(dev=d)
@@ -61,6 +67,25 @@ def testjudge(request,index):
             new_tj = new_tj.save()
             new_tj.stat = stat
             new_tj.save()
+        #log
+        q1 = Q(version__isnull=False)
+        q2 = Q(requirement=r)
+        ver = Development.objects.filter(q1&q2)
+        if len(ver) == 0:
+            version = ""
+        else:
+            version = ver[len(ver)-1].version+1
+        stage = u"dev"
+        message = u"testjudge was edited by %s "%request.user.username
+        if version =="":
+            html = u'<a href="/testjudge/%s">编辑测试评审</a> <a href="/testjudgeview/%s">查看测试评审</a> <a href="/viewdev/%s">查看研发</a> \
+                    <a href="/viewdevjudge/%s/">查看研发评审</a>'%(index,index,index,index)
+        else:
+            html = u'<a href="/testjudge/%s">编辑测试评审</a> <sup><font color=red>第%s次修正</font></sup> <a href="/testjudgeview/%s">查看测试评审</a> <a href="/viewdev/%s">查看研发</a> \
+                    <a href="/viewdevjudge/%s/">查看研发评审</a> <a href="/history/%s/"><sup>历史</sup></a>'%(index,version,index,index,index,index)
+        stat = new_tj.stat
+        log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
+        log.save()
 
         if stat == "prelocked":
             persons = set()
@@ -79,6 +104,19 @@ def testjudge(request,index):
             persons.add(pm(project))
             for i in persons:
                 tjc = TestJudgementConfirm.objects.create(testjudge=new_tj,signature=i,signed=False)
+            #log
+            stage = u"dev"
+            message = u"testjudge was edited by %s "%request.user.username
+            if version == "":
+                html = u'测试评审中 <a href="/testjudgeview/%s">查看测试评审</a> <a href="/viewdev/%s">查看研发</a> \
+                        <a href="/viewdevjudge/%s/">查看研发评审</a>'%(index,index,index)
+            else:
+                html = u'测试评审中 <a href="/testjudgeview/%s">查看测试评审</a> <a href="/viewdev/%s">查看研发</a> \
+                        <a href="/viewdevjudge/%s/">查看研发评审</a> <a href="/history/%s/"><sup>历史</sup></a>'%(index,index,index,index)
+            stat = new_tj.stat
+            log = History(requirement=r[len(r)-1],stage=stage,stat=stat,message=message,html=html,finished=False)
+            log.save()
+
             content.update({"message":"测试评审定稿"})
             return render_to_response('jforms/message.html',content)
 
@@ -136,16 +174,11 @@ def testjudgeconfirm(request, username, index):
             if done == True:
                 tj.stat = "locked"
                 tj.save()
-                #log
-                stage = u"test_judge"
-                message = u"test_judge signature done:%s"%tj.result
-                stat = tj.stat 
-                log = History(requirement=r,stage=stage,stat=stat,message=message)
-                log.save()
                 
                 if tj.result == "amend" or tj.result == "failure":
-                    q = Q(version__isnull=False)
-                    last_d = Development.objects.filter(q)
+                    q1 = Q(version__isnull=False)
+                    q2 = Q(requirement=r)
+                    last_d = Development.objects.filter(q1&q2)
                     if len(last_d) == 0:
                         d.version=1
                         d.ifpass = False
@@ -156,11 +189,26 @@ def testjudgeconfirm(request, username, index):
                         d.ifpass = False
                         d.save()
                     #log
-                    stage = u"test_judge"
-                    message = u"test_judge signature done:%s"%tj.result
-                    stat = tj.stat 
-                    log = History(requirement=r,stage=stage,stat=stat,message=message)
-                    log.save()
+                    if tj.result == "amend":
+                        stage = u"dev"
+                        message = u"test_judge signature done:%s"%tj.result
+                        stat = tj.stat
+                        version = d.version
+                        html = u'<a href="/dev/%s/">编辑研发<a><sup><font color=red>第%s次修正</font></sup>  <a href="/history/%s"> <sup>历史</sup> </a>'%(index,version,index)
+                        log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
+                        log.save()
+                    if tj.result == "failure":
+                        stage = u"dev"
+                        message = u"testjudge signature done: %s "%tj.result
+                        if version == ""
+                            html = u'<font color=red>研发失败,需求放弃</font><a href="/testjudgeview/%s">查看测试评审</a> <a href="/viewdev/%s">查看研发</a> \
+                                    <a href="/viewdevjudge/%s/">查看研发评审</a>'%(index,index,index)
+                        else:
+                            html = u'<font color=red>研发失败,需求放弃</font><a href="/testjudgeview/%s">查看测试评审</a> <a href="/viewdev/%s">查看研发</a> \
+                                    <a href="/viewdevjudge/%s/">查看研发评审</a>  <a href="/history/%s"> <sup>历史</sup> </a> '%(index,index,index,index)
+                        stat = tj.stat
+                        log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=True)
+                        log.save()
 
                 if tj.result == "success":
                     q = Q(version__isnull=False)
@@ -175,10 +223,16 @@ def testjudgeconfirm(request, username, index):
                         d.ifpass = True
                         d.save()
                     #log
-                    stage = u"test_judge"
+                    stage = u"dev"
                     message = u"test_judge signature done:%s"%tj.result
+                    if d.version == 1:
+                        html = u'<font color=green>研发成功,需求完成</font> <a href="/testjudgeview/%s">查看测试评审</a> <a href="/viewdev/%s">查看研发</a> \
+                                   <a href="/viewdevjudge/%s/">查看研发评审</a>'%(index,index,index)
+                    elif d.version > 1:
+                        html = u'<font color=green>研发成功,需求完成</font> <a href="/testjudgeview/%s">查看测试评审</a> <a href="/viewdev/%s">查看研发</a> \
+                                   <a href="/viewdevjudge/%s/">查看研发评审</a>  <a href="/history/%s"> <sup>历史</sup> </a>'%(index,index,index,index)
                     stat = tj.stat 
-                    log = History(requirement=r,stage=stage,stat=stat,message=message)
+                    log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=True)
                     log.save()
                    
             content.update({"message":"测试评审会签成功"})

@@ -90,6 +90,7 @@ class RequireJudgementEditForm(ModelForm):
 
 DEV_RESULT_CHOICES = (('test','提交测试'),
                   ('success','需求完成'),
+                  ('amend','研发修正'),
                   ('failure', '需求放弃'))
 
 class DevJudgeForm(forms.Form):
