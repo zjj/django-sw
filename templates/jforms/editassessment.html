@@ -16,7 +16,14 @@
 {{assessment.errors.assessment}}
 </div>
 <div class="form-row">
-<label></label>{{assessment.need_predev}}{{assessment.need_predev.label}}
+<label></label>
+{% if not req.only_predev %}
+    {{assessment.need_predev}}{{assessment.need_predev.label}}
+    {{assessment.need_test}}{{assessment.need_test.label}}
+{% endif %}
+{% if not req.need_test and req.only_predev %}
+    {{assessment.need_test}}{{assessment.need_test.label}}
+{% endif %}
 </div>
 <div class="form-row">
 {{assessment.assessor.label_tag}}

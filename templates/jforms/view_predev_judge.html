@@ -1,0 +1,65 @@
+<html lang="en-us">
+<head>
+<title>预研评审,编号:{{index}}</title>
+{% include "jforms/head.html" %}
+{% include "jforms/mce_init.html" %}
+</head>
+<body class="change-form">
+{% include "jforms/toolbar.html" %}
+<h1>预研评审,需求表编号:{{index}}</h1>
+<form  enctype="multipart/form-data" method="POST" action="">
+<fieldset class="module aligned">
+        <div class="form-row">
+            <label>需求表序列号:</label>{{index}} 
+            <a href="/viewrequirement/{{index}}/">查看需求详情</a>
+        </div>
+        {% if req.need_test and req.only_predev or ass.need_test %} 
+                <div class="form-row">
+                <label></label>
+                <table>
+                    <tr>
+                    <td>测试申请:<a href ="{{testapply_url}}">{{testapply_name}}</a> </td>
+                    </tr>
+                    <tr>
+                    <td>测试报告:<a href ="{{testreport_url}}">{{testreport_name}}</a> </td>
+                    </tr>
+                </table>
+                </div>
+        {%endif%}
+
+        <div class="form-row">
+        <label>{{predevjudge.overview.label_tag}}</label>
+        {{predevjudge.overview}}
+        {{predevjudge.errors.overview}}
+        </div>
+        <div class="form-row">
+        <label>{{predevjudge.analysis.label_tag}}</label>
+        {{predevjudge.analysis}}
+        {{predevjudge.errors.analysis}}
+        </div>
+        <div class="form-row">
+        <label>{{predevjudge.judgement.label_tag}}</label>
+        {{predevjudge.judgement}}
+        {{predevjudge.errors.judgement}}
+        </div>
+        <div class="form-row">
+        <label>{{predevjudge.result.label_tag}}</label>
+        {{predevjudge.result}}
+        </div>
+        <div class="form-row">
+        <label>{{predevjudge.judges.label_tag}}</label>
+        {%for i in judges%}
+            {% if i.signed %}
+            <font color=green>{{i.user.first_name}},</font>
+            {%else%}
+            <a href="/predevconfirm/{{i.user.username}}/{{index}}/"> {{i.user.first_name}},</a>
+            {% endif %}
+        {% endfor %}
+        </div>
+        <div class="form-row">
+        </div>
+</fieldset>
+</form>
+</body>
+</html>
+

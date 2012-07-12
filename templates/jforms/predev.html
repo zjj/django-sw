@@ -1,12 +1,12 @@
 <html lang="en-us">
 <head>
-<title>软件设计与实施记录(研发),编号:{{index}}</title>
+<title>软件设计与实施记录(预研),编号:{{index}}</title>
 {% include "jforms/head.html" %}
 {% include "jforms/mce_init.html" %}
 </head>
 <body class="change-form">
 {% include "jforms/toolbar.html" %}
-<h1>软件设计与实施记录(研发阶段),需求表编号:{{index}}</h1>
+<h1>软件设计与实施记录(预研阶段),需求表编号:{{index}}</h1>
 <form method="POST" action="">
 <fieldset class="module aligned">
         <div class="form-row">
@@ -21,7 +21,7 @@
         </div>
         <div class="form-row">
            <label></label> <input type="submit" value="提交" />
-           <input type="checkbox" name="stat" value="locked" /><font color="red">Lock (如结束研发阶段，请锁住)</font>
+           <input type="checkbox" name="stat" value="locked" /><font color="red">Lock (如结束预研阶段，请锁住)</font>
         </div>
 </fieldset>
 </form>
