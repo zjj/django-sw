@@ -19,7 +19,7 @@ def testjudge(request,index):
     r = Requirement.objects.filter(index=index)
     r = r[len(r)-1]
 
-    h = History.objects.filter(require=r,finished=True)
+    h = History.objects.filter(requirement=r,finished=True)
     if len(h) != 0:
         content.update({"message":"该需求已结束",})
         return render_to_response("jforms/message.html",content)
