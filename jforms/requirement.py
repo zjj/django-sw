@@ -47,11 +47,13 @@ def newrequirement(request):
                stat="unlocked")
             requirement.executer = executer
             requirement.cc = cc
-            requirement.save()            
-            stage = u"reqiurement_edit"
+            requirement.save()           
+            #log 
+            stage = u"requirement"
             message = u"requirement was created by %s"%request.user.first_name
-            statchange = u"unlocked" 
-            log = History(requirement=requirement,stage=stage,statchange=statchange,message=message)
+            stat = u"unlocked" 
+            html = '<a href="/editrequirement/%s/">编辑需求</a> <a href="/viewrequirement/%s/"> 查看需求</a>'%(index,index,)
+            log = History(requirement=requirement,stage=stage,stat=stat,message=message,html=html,finished=False)
             log.save()
         else:
             content.update({"requirement":r})
@@ -120,11 +122,13 @@ def editrequirement(request, index):
                 for user in persons:
                     rc = RequirementConfirm.objects.create(requirement=requirement,signature=user,signed=False,accept=True)
                     rc.save()
-    
-                stage = u"reqiurement_confirm"
+                
+                #log 
+                stage = u"requirement"
                 message = u"requirement was prelocked"
-                statchange = u"prelocked" 
-                log = History(requirement=requirement,stage=stage,statchange=statchange,message=message)
+                stat = u"prelocked" 
+                html = '需求确认中 <a href="/viewrequirement/%s/"> 查看需求</a>'%(index,)
+                log = History(requirement=requirement,stage=stage,stat=stat,message=message,html=html,finished=False)
                 log.save()
 
             return render_to_response('jforms/message.html',{"message":"本次修改已经保存","username":request.user.first_name})
@@ -199,19 +203,23 @@ def requirementconfirm(request,username,index):
             if accept == False: 
                 r.stat = "locked"
                 r.save()
-                stage = u"reqiurement_confirm"
+                #log
+                stage = u"requirement"
                 message = u"requirement was reject"
-                statchange = u"aborted"
-                log = History(requirement=r,stage=stage,statchange=statchange,message=message)
+                stat = u"aborted"
+                html = '<font color=red>有确认人员拒绝需求<font> <a href="/viewrequirement/%s/"> 查看详情</a>'%(index,)
+                log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=True)
                 log.save()
             else:
                 if done == True:
                     r.stat = "locked"
                     r.save()
-                    stage = u"reqiurement_confirm"
+                    #log
+                    stage = u"requirement"
                     message = u"requirement was accept"
-                    statchange = u"accept"
-                    log = History(requirement=r,stage=stage,statchange=statchange,message=message)
+                    stat = u"accept"
+                    html = '<a href="/editassessment/%s/"> 新建风险评估 </a> <a href="/viewrequirement/%s/"> 查看需求详情</a>'%(index,index)
+                    log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=True)
                     log.save()
         return render_to_response("jforms/message.html",{"message":"需求确认成功！"});
 
@@ -267,17 +275,19 @@ def editassessment(request,index):
             ass.save()
             if stat == "locked":
                 #log
-                stage = u"reqiurement_assess"
+                stage = u"requirement"
                 message = u"assessment was locked by %s"%request.user.first_name
-                statchange = stat 
-                log = History(requirement=r,stage=stage,statchange=statchange,message=message)
+                html = '<a href="/judgerequirement/%s/">新建需求评审</a> <a href="/viewrequirement/%s/"> 查看需求详情</a>'%(index,index,)
+                stat = stat 
+                log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
                 log.save()
             else:
                 if exist == False: 
-                    stage = u"reqiurement_assess"
+                    stage = u"requirement"
                     message = u"assessment was created by %s"%request.user.first_name
-                    statchange = stat 
-                    log = History(requirement=r,stage=stage,statchange=statchange,message=message)
+                    stat = stat 
+                    html = '<a href="/editassessment/%s/">编辑需求评估</a> <a href="/viewrequirement/%s/"> 查看需求详情</a>'%(index,index,)
+                    log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
                     log.save()
                 
             content.update({"message":"评估已保存"})
@@ -330,10 +340,11 @@ def judgerequirement(request,index):
             rj.save()
             if stat == "prelocked":
                 #log
-                stage = u"reqiurement_judge"
+                stage = u"requirement"
                 message = u"judgement was prelocked by %s"%request.user.first_name
-                statchange = stat 
-                log = History(requirement=r,stage=stage,statchange=statchange,message=message)
+                html = u'需求评审会签中 <a href="/judgerequirementview/%s/">需求评审详情</a>'%(index,)
+                stat = stat 
+                log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
                 log.save()
                 #
                 persons = set()
@@ -353,10 +364,11 @@ def judgerequirement(request,index):
                     rc.save()
             else:
                 if exist == False: 
-                    stage = u"reqiurement_judge"
+                    stage = u"requirement"
                     message = u"judgement was created by %s"%request.user.first_name
-                    statchange = stat 
-                    log = History(requirement=r,stage=stage,statchange=statchange,message=message)
+                    stat = stat 
+                    html = u'<a href=/judgerequirement/%s/>编辑需求评审 <a href="/viewrequirement/%s/"> 需求详情</a>'%(index,index,)
+                    log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
                     log.save()
             content.update({"message":"评审已保存"})
             return render_to_response('jforms/message.html',content)
@@ -402,12 +414,30 @@ def judgerequirementconfirm(request,username, index):
                     p = p[len(p)-1]
                     p.stat = "locked"
                     p.save()
-
-                    stage = u"reqiurement_judge"
+                    #log
+                    stage = u"requirement"
                     message = u"judgement signature done:%s"%p.result
-                    statchange = p.stat 
-                    log = History(requirement=r,stage=stage,statchange=statchange,message=message)
-                    log.save()
+                    stat = p.stat
+                    if p.result == "develop":
+                        html = u'<a href="/viewrequirement/%s/">查看需求详情</a>'%(index,)
+                        log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
+                        log.save() 
+                        stage = "dev"
+                        html = u'<a href="/dev/%s/">新建研发</a>'%(index,) 
+                        log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
+                        log.save()
+                    elif p.result == "predev":
+                        html = u'<a href="/viewrequirement/%s/">查看需求详情</a>'%(index,)
+                        log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
+                        log.save()
+                        stage = u"predev"
+                        html = u'<a href="/predev/%s/">新建预研</a>'%(index,)
+                        log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
+                        log.save()
+                    elif p.result == "reject":
+                        html = u'<font color=red>需求评审结束，需求拒绝</font> <a href="/viewrequirement/%s/">查看需求详情</a>'%(index,)
+                        log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=True)
+                        log.save()
 
             content.update({"message":"评审会签成功"})
             return render_to_response("jforms/message.html",content);

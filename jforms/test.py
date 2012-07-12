@@ -139,8 +139,8 @@ def testjudgeconfirm(request, username, index):
                 #log
                 stage = u"test_judge"
                 message = u"test_judge signature done:%s"%tj.result
-                statchange = tj.stat 
-                log = History(requirement=r,stage=stage,statchange=statchange,message=message)
+                stat = tj.stat 
+                log = History(requirement=r,stage=stage,stat=stat,message=message)
                 log.save()
                 
                 if tj.result == "amend" or tj.result == "failure":
@@ -158,8 +158,8 @@ def testjudgeconfirm(request, username, index):
                     #log
                     stage = u"test_judge"
                     message = u"test_judge signature done:%s"%tj.result
-                    statchange = tj.stat 
-                    log = History(requirement=r,stage=stage,statchange=statchange,message=message)
+                    stat = tj.stat 
+                    log = History(requirement=r,stage=stage,stat=stat,message=message)
                     log.save()
 
                 if tj.result == "success":
@@ -177,8 +177,8 @@ def testjudgeconfirm(request, username, index):
                     #log
                     stage = u"test_judge"
                     message = u"test_judge signature done:%s"%tj.result
-                    statchange = tj.stat 
-                    log = History(requirement=r,stage=stage,statchange=statchange,message=message)
+                    stat = tj.stat 
+                    log = History(requirement=r,stage=stage,stat=stat,message=message)
                     log.save()
                    
             content.update({"message":"测试评审会签成功"})

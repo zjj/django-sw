@@ -30,7 +30,20 @@ def predev(request, index):
         stat = request.POST.get("stat","unlocked")
         p = PreDevelopment(requirement=r,author=author,bg=bg,design=design,stat=stat)
         p.save()
+        #log
+        stage = u"predev"
+        message = u"predev was edited by %s"%request.user.username
+        html = u'<a href="/predev/%s">编辑预研</a>'%(index,)
+        log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
+        log.save()
         if stat == "locked":
+            #log        
+            stage = u"predev"
+            message = u"predev was locked by %s"%request.user.username
+            html = u'<a href="/predevjudge/%s/">新建预研评审</a> <a href="/viewpredev/%s">查看预研</a>'%(index,index)
+            log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
+            log.save()
+    
             return render_to_response("jforms/message.html",{"message":"本次预研结束"})
         return render_to_response("jforms/message.html",{"message":"本次已经保存，下次可继续进行修改",})
     
@@ -91,6 +104,13 @@ def predevjudge(request,index):
             pdj.author = request.user
             pdj.stat = stat
             pdj.save()
+            #log
+            stage = u"predev"
+            message = u"predevjudge was edited by %s"%request.user.username
+            html = u'<a href="/predevjudge/%s/">编辑预研评审</a> <a href="/viewpredev/%s">查看预研</a> <a href="/viewpredevjudge/%s/">查看评审详情</a>'%(index,index,index)
+            log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
+            log.save()
+
             content.update({"message":"预研评审已经保存."})
             if stat == "prelocked":
                 persons = set()
@@ -110,6 +130,13 @@ def predevjudge(request,index):
                 persons.add(pm(project))
                 for i in persons:
                     pdjc = PreDevJudgementConfirm.objects.create(predevjudge=pdj,user=i,signed=False)
+                #log
+                stage = u"predev"
+                message = u"predevjudge was locked by %s"%request.user.username
+                html = u'预研评审会签中 <a href="/viewpredev/%s">查看预研</a> <a href="/viewpredevjudge/%s/">查看评审详情</a>'%(index,index)
+                log = History(requirement=r[len(r)-1],stage=stage,stat=stat,message=message,html=html,finished=False)
+                log.save()
+
                 content.update({"message":"预研评审已经保存,并已定稿"})
             return render_to_response('jforms/message.html',content)
             
@@ -182,11 +209,34 @@ def predevconfirm(request,username,index):
                 pdj.stat = "locked"
                 pdj.save()
                 #log
-                stage = u"predev"
-                message = u"predev judge done:%s"%pdj.result
-                statchange = pdj.stat 
-                log = History(requirement=r,stage=stage,statchange=statchange,message=message)
-                log.save()
+                if pdj.result == "failure":
+                    stage = u"predev"
+                    message = u"predevjudge done "
+                    html = u'<font color=red>研发放弃</font> <a href="/viewpredev/%s">查看预研</a> <a href="/viewpredevjudge/%s/">查看评审详情</a>'%(index,index)
+                    stat = pdj.result 
+                    log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=True)
+                    log.save()
+                elif pdj.result == "success":
+                    stage = u"predev"
+                    message = u"predevjudge done "
+                    html = u'<font color=green>需求完成</font> <a href="/viewpredev/%s">查看预研</a> <a href="/viewpredevjudge/%s/">查看评审详情</a>'%(index,index)
+                    stat = pdj.result 
+                    log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=True)
+                    log.save()
+                elif pdj.result == "dev":
+                    stage = u"predev"
+                    message = u"predevjudge done "
+                    html = u'<a href="/viewpredev/%s">查看预研</a> <a href="/viewpredevjudge/%s/">查看评审详情</a>'%(index,index)
+                    stat = pdj.result
+                    log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
+                    log.save()
+                    stage = u"dev"
+                    message = u"predevjudge done"
+                    html = u'<a href="/dev/%s">新建研发</a>'%(index,)
+                    stat = pdj.stat
+                    log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
+                    log.save()
+
             content.update({"message":"会签成功"})
         else:
             content.update({"message":"密码错误,会签失败"})
@@ -228,17 +278,14 @@ def viewpredevjudge(request,index):
     content.update({"judges":pdjc})
     return render_to_response('jforms/view_predev_judge.html',content)
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+def viewpredev(request,index):
+    content={}
+    content.update({"index":index})
+    content.update({"username":request.user.first_name})
+    r = Requirement.objects.filter(index=index)
+    r = r[len(r)-1]
+    j = PreDevelopment.objects.filter(requirement=r) 
+    if len(j) != 0:
+        d = j[len(j)-1]
+        content.update({"dev":d})
+    return render_to_response('jforms/viewpredev.html',content)

@@ -20,7 +20,7 @@ admin.site.register(RequirementConfirm,RC_c)
 admin.site.register(Assessment)
 
 class History_c(admin.ModelAdmin):
-    fields = ['requirement','stage','statchange','message']
+    fields = ['requirement','stage','stat','message','finished']
     list_display = fields
 admin.site.register(History,History_c)
 admin.site.register(RequireJudgementConfirm)

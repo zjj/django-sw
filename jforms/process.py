@@ -26,9 +26,26 @@ def process(request):
         req = req[len(req)-1]
         reqs.append(req)
     for i in reqs:
-        h = History.objects.filter(requirement=i)
-        now = h[len(h)-1]
-        each = {"requirement":i,"stage":now,}
+        each = {"requirement":i}
+        try:
+            rh = History.objects.filter(requirement=i,stage="requirement")
+            rh = rh[len(rh)-1]
+            each.update({"req":rh})
+        except:
+            pass
+        try: 
+            ph = History.objects.filter(requirement=i,stage="predev")
+            ph = ph[len(ph)-1]
+            print ph.html
+            each.update({"predev":ph})
+        except:
+            pass
+        try:
+            dh = History.objects.filter(requirement=i,stage="dev")
+            dh = dh[len(dh)-1]
+            each.update({"dev":dh})
+        except:
+            pass
         ret.append(each)
    
     paginator = Paginator(ret,2)

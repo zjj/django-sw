@@ -48,6 +48,7 @@ td,th
             <th scope="col"> <div class="text">硬件类型</div><div class="clear"></div></th>
             <th scope="col"> <div class="text">需求时间</div><div class="clear"></div></th>
             <th scope="col"> <div class="text">需求阶段</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">预研阶段</div><div class="clear"></div></th>
             <th scope="col"> <div class="text">研发阶段</div><div class="clear"></div></th>
         </tr>
 {% for each in list %}
@@ -58,10 +59,9 @@ td,th
         <td>{{each.requirement.software_type.software_type}}</td>
         <td>{{each.requirement.hardware.hardware}}</td>
         <td>{{each.requirement.expired_date|date:"Y-m-j"}}</td>
-        {% if "reqiurement" in each.stage.stage %}
-        <td>{{each.stage.message|safe}}</td>
-        <td>{{each.stage.message|safe}}</td>
-        {%endif%}
+        <td>{{each.req.html|safe}}</td>
+        <td>{{each.predev.html|safe}}</td>
+        <td>{{each.dev.html|safe}}</td>
     </tr>
 {% endfor %}
 </table>

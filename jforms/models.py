@@ -80,8 +80,10 @@ class RequirementConfirm(models.Model):
 class History(models.Model):
     requirement = models.ForeignKey(Requirement)
     stage = models.CharField(max_length=1000)
-    statchange = models.CharField(max_length=1000)
+    stat = models.CharField(max_length=1000)
     message = models.CharField(max_length=1000,null=True)
+    finished = models.BooleanField()
+    html = models.CharField(max_length=1000,null=True)
     time = models.DateTimeField(auto_now=True)
    
 class Assessment(models.Model):

@@ -17,8 +17,8 @@ def dept_manager(dept):
     dept = Dept.objects.get(group=group)
     return dept.manager
 
-def log(requirement="",stage="",statchange="",message=""):
-    h = History(requirement=requirement,stage=stage,statchange=statchange,message=message)
+def log(requirement="",stage="",stat="",message=""):
+    h = History(requirement=requirement,stage=stage,stat=stat,message=message)
     h.save()
 
 
