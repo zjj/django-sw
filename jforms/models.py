@@ -41,7 +41,6 @@ class Dept(models.Model):
     def __unicode__(self):
         return unicode(self.group)
 
-    
 class Requirement(models.Model):
     index = models.IntegerField() 
     require_name = models.CharField(max_length=500)
@@ -90,6 +89,7 @@ class Assessment(models.Model):
     author = models.ForeignKey(User) 
     assessment = models.TextField()
     need_predev = models.BooleanField()
+    need_test = models.BooleanField()
     assessor = models.ManyToManyField(User,related_name="+++")
     stat = models.CharField(max_length=10)  #unlocked locked
     time = models.DateTimeField(auto_now=True)
@@ -138,8 +138,42 @@ class DevJudgement(models.Model):
     time = models.DateTimeField(auto_now=True)
     stat = models.CharField(max_length=10) # unlocked  locked
 
+#软件设计与实施记录 预研
+class PreDevelopment(models.Model):
+    requirement = models.ForeignKey(Requirement)
+    author = models.ForeignKey(User) 
+    version = models.IntegerField(null=True)
+    bg = models.TextField() # background and development enviroment 
+    design= models.TextField()
+    time = models.DateTimeField(auto_now=True)
+    stat = models.CharField(max_length=10) # unlocked  locked
+    ifpass = models.BooleanField() 
+
+#软件可行性分析报告 预研评审
+class PreDevJudgement(models.Model):
+    predev = models.ForeignKey(PreDevelopment,null=True)
+    author = models.ForeignKey(User,null=True)
+    testapply = models.FileField(upload_to="files/%Y/%m/%d",null=True)
+    testreport = models.FileField(upload_to="files/%Y/%m/%d",null=True)
+    overview = models.TextField()
+    analysis = models.TextField()
+    judgement = models.TextField()
+    result = models.CharField(max_length=100)
+    judges = models.ManyToManyField(User,related_name="+++++++")
+    time = models.DateTimeField(auto_now=True)
+    stat = models.CharField(max_length=10) # unlocked  prelocked locked
+
+class PreDevJudgementConfirm(models.Model):
+    predevjudge = models.ForeignKey(PreDevJudgement)
+    user = models.ForeignKey(User)
+    time = models.DateTimeField(auto_now=True)
+    signed = models.BooleanField() 
+    class Meta:
+        unique_together = ('predevjudge', 'user')
+
+#测试评审
 class TestJudgement(models.Model):
-    predevjudge = models.ForeignKey(DevJudgement,null=True,related_name="+") #***here ,should PreDevJudgement***
+    predevjudge = models.ForeignKey(PreDevJudgement,null=True)
     devjudge = models.ForeignKey(DevJudgement,null=True)
     author = models.ForeignKey(User) 
     overview = models.TextField()
@@ -150,11 +184,11 @@ class TestJudgement(models.Model):
     explain = models.TextField(null=True)
     time = models.DateTimeField(auto_now=True)
     stat = models.CharField(max_length=10) # unlocked  locked done
-    testapply = models.FileField(upload_to="files/%Y/%m/%d")
-    testreport = models.FileField(upload_to="files/%Y/%m/%d")
+    testapply = models.FileField(upload_to="files/%Y/%m/%d",null=True)
+    testreport = models.FileField(upload_to="files/%Y/%m/%d",null=True)
 
 class TestJudgementConfirm(models.Model):
-    predevjudge = models.ForeignKey(DevJudgement,null=True,related_name="+") #***here ,should PreDevJudgement***
+    predevjudge = models.ForeignKey(PreDevJudgement,null=True)
     devjudge = models.ForeignKey(DevJudgement,null=True)
     testjudge = models.ForeignKey(TestJudgement,null=True)
     signature = models.ForeignKey(User)
@@ -165,7 +199,9 @@ class TestJudgementConfirm(models.Model):
         verbose_name_plural = "测试评审会签"
 
 
+      
     
+     
     
     
     

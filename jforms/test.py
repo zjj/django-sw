@@ -28,6 +28,9 @@ def testjudge(request,index):
         if tj.stat == "prelocked":
            content.update({"message":"测试评审暂时已经定稿，无法进行修改."})
            return render_to_response('jforms/message.html',content)
+        if tj.stat == "locked":
+           content.update({"message":"测试已经评审完毕，无法进行修改."})
+           return render_to_response('jforms/message.html',content)
 
     if request.method == "POST":
         tj = TestJudgeEditForm(request.POST,request.FILES)
@@ -96,6 +99,9 @@ def testjudge(request,index):
         if tj.stat == "prelocked":
            content.update({"message":"测试评审暂时已经定稿，无法进行修改."})
            return render_to_response('jforms/message.html',content)
+        if tj.stat == "locked":
+           content.update({"message":"测试已经评审完毕，无法进行修改."})
+           return render_to_response('jforms/message.html',content)
         test = TestJudgeEditForm(instance=tj)
     content.update({"test":test,})
     return render_to_response('jforms/test.html',content)
@@ -132,12 +138,12 @@ def testjudgeconfirm(request, username, index):
                 tj.save()
                 #log
                 stage = u"test_judge"
-                message = u"judgement signature done:%s"%tj.result
+                message = u"test_judge signature done:%s"%tj.result
                 statchange = tj.stat 
                 log = History(requirement=r,stage=stage,statchange=statchange,message=message)
                 log.save()
                 
-                if tj.result == "amend":
+                if tj.result == "amend" or tj.result == "failure":
                     q = Q(version__isnull=False)
                     last_d = Development.objects.filter(q)
                     if len(last_d) == 0:
@@ -149,6 +155,31 @@ def testjudgeconfirm(request, username, index):
                         d.version = last.version+1
                         d.ifpass = False
                         d.save()
+                    #log
+                    stage = u"test_judge"
+                    message = u"test_judge signature done:%s"%tj.result
+                    statchange = tj.stat 
+                    log = History(requirement=r,stage=stage,statchange=statchange,message=message)
+                    log.save()
+
+                if tj.result == "success":
+                    q = Q(version__isnull=False)
+                    last_d = Development.objects.filter(q)
+                    if len(last_d) == 0:
+                        d.version=1
+                        d.ifpass = True
+                        d.save()
+                    else:
+                        last = last_d[len(last_d)-1]
+                        d.version = last.version+1
+                        d.ifpass = True
+                        d.save()
+                    #log
+                    stage = u"test_judge"
+                    message = u"test_judge signature done:%s"%tj.result
+                    statchange = tj.stat 
+                    log = History(requirement=r,stage=stage,statchange=statchange,message=message)
+                    log.save()
                    
             content.update({"message":"测试评审会签成功"})
             return render_to_response("jforms/message.html",content);
@@ -162,7 +193,7 @@ def testjudgeconfirm(request, username, index):
         content.update({"message":"该用户已经对评审进行会签"})
         return render_to_response("jforms/message.html",content);
 
-    return render_to_response('jforms/requirejudementconfirm.html',content)
+    return render_to_response('jforms/testconfirm.html',content)
 
 def testjudgeview(request,index):
     content={}
@@ -190,9 +221,3 @@ def testjudgeview(request,index):
     content.update({"test":test,})
     return render_to_response('jforms/testview.html',content)
 
-
-    
-    
-        
-            
-            

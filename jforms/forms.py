@@ -58,14 +58,17 @@ class RequirementEditForm(ModelForm):
 class AssessmentEditForm(ModelForm):
     assessment = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 20}),label="风险评估:")
     need_predev = forms.BooleanField(label="需预研",required = False)
+    need_test = forms.BooleanField(label="预研需测试",required = False)
     assessor = myModelMultipleChoiceField(widget=CheckboxSelectMultiple,queryset=User.objects.all(),label="评估方:",required = False)
     class Meta:
         model = Assessment
-        fields = ("assessment","need_predev","assessor")
+        fields = ("assessment","need_predev","need_test","assessor")
 
 class AssessmentForm(forms.Form):
     assessment = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 20}),label="风险评估:")
     need_predev = forms.BooleanField(label="需预研",required = False)
+    need_test = forms.BooleanField(label="预研需测试",required = False)
+    assessor = myModelMultipleChoiceField(widget=CheckboxSelectMultiple,queryset=User.objects.all(),label="评估方:",required = False)
     assessor = myModelMultipleChoiceField(widget=CheckboxSelectMultiple,queryset=User.objects.all(),label="评估方:",required = False)
 
 REQUIRE_RESULT_CHOICES = (('develop','进行研发'),
@@ -123,4 +126,20 @@ class TestJudgeEditForm(ModelForm):
     class Meta:
         model = TestJudgement
         fields = ("overview","result","judgement","date","explain","judges","testapply","testreport")
+
+
+PREDEV_TEST_RESULT_CHOICES = (('success','满足需求,需求结束'),
+                  ('failure','放弃'),
+                  ('dev', '进行研发'))
+
+class PreDevJudgeEditForm(ModelForm):
+    overview = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 10}),label="结论概况:")
+    result = forms.ChoiceField(widget=Select,choices=PREDEV_TEST_RESULT_CHOICES,required = True,label="评审结论")
+    analysis = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 20}),label="可行性分析报告:")
+    judgement = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 20}),label="评审记录:")
+    judges = myModelMultipleChoiceField(widget=CheckboxSelectMultiple,queryset=User.objects.all(),label="评审人员:",required = False)
+    class Meta:
+        model = PreDevJudgement
+        fields = ("overview","result","analysis","judgement","judges",)
+
 

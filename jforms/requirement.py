@@ -258,10 +258,11 @@ def editassessment(request,index):
         if ass.is_valid():
             assessment = ass.cleaned_data["assessment"]
             need_predev = ass.cleaned_data["need_predev"]
+            need_test = ass.cleaned_data["need_test"]
             assessor = ass.cleaned_data["assessor"]
             stat = request.POST.get("stat","unlocked")
             ass = Assessment.objects.create(requirement=r,author=request.user, \
-                            assessment=assessment,need_predev = need_predev,stat=stat)
+                            assessment=assessment, need_test=need_test, need_predev=need_predev,stat=stat)
             ass.assessor = assessor
             ass.save()
             if stat == "locked":
@@ -285,6 +286,7 @@ def editassessment(request,index):
     r = Requirement.objects.filter(index=index)
     if len(r)!=0:
         r = r[len(r)-1]
+    content.update({"req":r})
     assessment = Assessment.objects.filter(requirement=r)
     if len(assessment) != 0:
         last = assessment[len(assessment)-1]
@@ -311,7 +313,7 @@ def judgerequirement(request,index):
         last = RequireJudgement.objects.filter(requirement=r)
         if len(last) != 0:
             last = last[len(last)-1]
-            if last.stat == "locked":
+            if last.stat == "locked" or last.stat == "prelocked":
                 content.update({"message":"评审无法进行修改"})
                 return render_to_response('jforms/message.html',content)
         else:
@@ -356,6 +358,8 @@ def judgerequirement(request,index):
                     statchange = stat 
                     log = History(requirement=r,stage=stage,statchange=statchange,message=message)
                     log.save()
+            content.update({"message":"评审已保存"})
+            return render_to_response('jforms/message.html',content)
 
     r = Requirement.objects.filter(index=index)
     if len(r) != 0:
@@ -363,6 +367,9 @@ def judgerequirement(request,index):
     rj = RequireJudgement.objects.filter(requirement=r)
     if len(rj) != 0:
         rj = rj[len(rj)-1]
+        if rj.stat == "locked" or rj.stat == "prelocked":
+            content.update({"message":"评审无法进行修改"})
+            return render_to_response('jforms/message.html',content)
         rjef = RequireJudgementEditForm(instance=rj)
     else:
         rjef = RequireJudgementEditForm()
@@ -418,61 +425,24 @@ def judgerequirementconfirm(request,username, index):
      
     return render_to_response('jforms/requirejudementconfirm.html',content)
      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+def judgerequirementview(request,index):
+    content={}
+    content.update({"index":index})
+    content.update({"username":request.user.first_name})
+    r = Requirement.objects.filter(index=index)
+    if len(r) != 0:
+        r=r[len(r)-1]
+    rj = RequireJudgement.objects.filter(requirement=r)
+    if len(rj) != 0:
+        rj = rj[len(rj)-1]
+        rjef = RequireJudgementEditForm(instance=rj)
+        content.update({"rjef":rjef})
+        s = RequireJudgementConfirm.objects.filter(requirement=r)
+        content.update({"confirm":s})
+        return render_to_response('jforms/requirejudementview.html',content)
+    else:
+        content.update({"message":"暂时无该编号的需求评审查看"})
+        return render_to_response('jforms/message.html',content)
 
 
 
