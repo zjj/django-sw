@@ -219,7 +219,7 @@ def requirementconfirm(request,username,index):
                     message = u"requirement was accept"
                     stat = u"accept"
                     html = '<a href="/editassessment/%s/"> 新建风险评估 </a> <a href="/viewrequirement/%s/"> 查看需求详情</a>'%(index,index)
-                    log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=True)
+                    log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
                     log.save()
         return render_to_response("jforms/message.html",{"message":"需求确认成功！"});
 
