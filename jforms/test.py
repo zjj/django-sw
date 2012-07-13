@@ -62,7 +62,9 @@ def testjudge(request,index):
                 content.update({"test":last_tj})
                 return render_to_response('jforms/test.html',content)
             else:
-               last_tj = last_tj[len(last_tj)-1]
+                last_tj = last_tj[len(last_tj)-1]
+                last_tj.pk = None
+                last_tj.save()
             new_tj = TestJudgeEditForm(request.POST,request.FILES,instance=last_tj)
             new_tj = new_tj.save()
             new_tj.stat = stat
