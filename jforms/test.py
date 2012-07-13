@@ -91,8 +91,7 @@ def testjudge(request,index):
 
         if stat == "prelocked":
             persons = set()
-            for i in new_tj.judges.values():
-                user = User.objects.get(id=i["id"])
+            for user in new_tj.judges.all():
                 persons.add(user)
             try:
                 persons.add(dept_manager("软件部"))

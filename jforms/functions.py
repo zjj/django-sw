@@ -5,8 +5,8 @@ def adduser(content,user):
     content.update({"username":user.first_name}) 
 
 def myboss(user):
-    group = user.groups.values()[0]["id"]
-    dept = Dept.objects.get(id=group)
+    group = user.groups.all()[0]
+    dept = Dept.objects.get(group=group)
     return dept.manager
 
 def pm(project):

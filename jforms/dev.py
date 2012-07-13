@@ -147,8 +147,7 @@ def devjudge(request,index):
             log.save()
             if stat == "prelocked":
                 persons = set()
-                for i in dj.judges.values():
-                    user = User.objects.get(id=i["id"])
+                for user in dj.judges.all():
                     persons.add(user)
                 try:
                     persons.add(dept_manager("软件部"))
