@@ -1,0 +1,79 @@
+<html lang="en-us">
+<head>
+<meta http-equiv="content-type" contentx="text/html; charset=utf-8"/>
+<title>状态查询</title>
+{% include "jforms/head.html" %}
+{% include "jforms/mce_init.html" %}
+<style type="text/css">
+table
+  {
+    border-collapse:collapse;
+    width:100%;
+    border:1px solid black;
+  }
+td,th
+{
+ border-left: 1px solid #ddd;
+ border:1px solid black;
+}
+</style>
+</head>
+<body class="change-form">
+{% include "jforms/toolbar.html" %}
+<h1>History of {{index}}</h1>
+<br>
+<table>
+          <tr> 
+            <th scope="col"> <div class="text">编号</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">研发</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">研发评审</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">测试评审</div><div class="clear"></div></th>
+        </tr>
+{% for each in list %}
+    <tr>
+        <td><a href="/viewrequirement/{{each.req.index}}/">{{each.req.index}}</a></td>
+        {%if each.dev.id %}
+            <td><a href="/viewdev_id/{{each.dev.id}}">查看</a> <sub>{{each.dev.time|date:"Y/m/j"}}</sub></td>
+        {%else%}
+        <td>{{each.dev.id|default:"NIL"}}</td>
+        {% endif %}
+        
+        {% if each.dj.id %}
+            <td><a href="/viewdevjudge_id/{{each.dj.id}}">查看</a> <sub>{{each.dj.time|date:"Y/m/j"}}</sub> </td>
+        {%else%}
+            <td>{{each.dj.id|default:"NIL"}}</td>
+        {%endif%}
+
+        {%if each.tj.id %}
+            <td><a href="/viewtestjudge_id/{{each.tj.id}}">查看</a> <sub>{{each.tj.time|date:"Y/m/j"}}</sub> </td>
+        {%else%}
+            <td>{{each.tj.id|default:"NIL"}}</td>
+        {%endif%}
+    </tr>
+{% endfor %}
+</table>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

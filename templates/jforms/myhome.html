@@ -1,14 +1,74 @@
 <html lang="en-us">
 <head>
-<title>message</title>
 <meta http-equiv="content-type" contentx="text/html; charset=utf-8"/>
-<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
-<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
-<link rel="stylesheet" type="text/css" href="/static/admin/css/dashboard.css" />
+<title>状态查询</title>
+{% include "jforms/head.html" %}
+{% include "jforms/mce_init.html" %}
+<style type="text/css">
+table
+  {
+    border-collapse:collapse;
+    width:100%;
+    border:1px solid black;
+  }
+td,th
+{
+ border-left: 1px solid #ddd;
+ border:1px solid black;
+}
+</style>
 </head>
 <body class="change-form">
 {% include "jforms/toolbar.html" %}
-<div>
-</div>
+<h1>我近期申请的需求:</h1>
+<table>
+          <tr> 
+            <th scope="col"> <div class="text">编号</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">软件名称</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">所属项目</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">软件类型</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">硬件类型</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">需求时间</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">需求阶段</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">预研阶段</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">研发阶段</div><div class="clear"></div></th>
+        </tr>
+{% for each in list %}
+    <tr>
+        <td>{{each.requirement.index}}</td>
+        <td>{{each.requirement.require_name}}</td>
+        <td>{{each.requirement.project.project}}</td>
+        <td>{{each.requirement.software_type.software_type}}</td>
+        <td>{{each.requirement.hardware.hardware}}</td>
+        <td>{{each.requirement.expired_date|date:"Y-m-j"}}</td>
+        <td>{{each.req.html|safe}}</td>
+        {%if each.dev.html%}
+        <td>{{each.predev.html|safe|default:"NIL"}}</td>
+        {%else%}
+        <td>{{each.predev.html|safe}}</td>
+        {%endif%}
+        <td>{{each.dev.html|safe}}</td>
+    </tr>
+{% endfor %}
+</table>
+<br>
+<h1>近期需要会签的需求:</h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </body>
 </html>

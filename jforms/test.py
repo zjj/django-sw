@@ -277,3 +277,21 @@ def testjudgeview(request,index):
     content.update({"test":test,})
     return render_to_response('jforms/testview.html',content)
 
+def viewtestjudge_id(request,id):
+    content={}
+    tj = TestJudgement.objects.get(id=id)
+    testapply = {}
+    testreport = {}
+    testapply["url"] = tj.testapply.url
+    testapply["name"] = tj.testapply.name.split("/")[-1]
+    testreport["url"] = tj.testreport.url
+    testreport["name"] = tj.testreport.name.split("/")[-1]
+    content.update({"testapply":testapply})
+    content.update({"testreport":testreport})
+    s = TestJudgementConfirm.objects.filter(testjudge=tj)
+    content.update({"judges":s}) 
+    test = TestJudgeEditForm(instance=tj)
+    content.update({"test":test,})
+    return render_to_response('jforms/testview.html',content)
+
+

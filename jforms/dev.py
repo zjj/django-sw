@@ -209,6 +209,17 @@ def viewdevjudge(request,index):
     content.update({"judges":judges})
     return render_to_response('jforms/viewdevjudge.html',content)
 
+def viewdevjudge_id(request,id):
+    content={}
+    content.update({"username":request.user.first_name})
+            
+    dj = DevJudgement.objects.get(id=id)
+    j = DevJudgeEditForm(instance=dj)
+    content["devjudge"]=j
+    judges = DevJudgementConfirm.objects.filter(devjudge=dj)
+    content.update({"judges":judges})
+    return render_to_response('jforms/viewdevjudge.html',content)
+
 def devjudgeconfirm(request,username,index):
     content={}
     content.update({"index":index})
@@ -309,6 +320,13 @@ def devjudgeconfirm(request,username,index):
         return render_to_response('jforms/message.html',content)
 
     return render_to_response('jforms/testconfirm.html',content)
+
+def viewdev_id(request,id):
+    content={}
+    content.update({"username":request.user.first_name})
+    d = Development.objects.get(id=id) 
+    content.update({"dev":d})
+    return render_to_response('jforms/viewdev.html',content)
 
 
 

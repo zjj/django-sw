@@ -20,7 +20,8 @@ td,th
 </head>
 <body class="change-form">
 {% include "jforms/toolbar.html" %}
-<br>
+{% include "jforms/filter_plugin.html" %}
+<h1>结果:</h1>
 <center>
 <div class="pagination">
     <span class="step-links">
@@ -60,7 +61,11 @@ td,th
         <td>{{each.requirement.hardware.hardware}}</td>
         <td>{{each.requirement.expired_date|date:"Y-m-j"}}</td>
         <td>{{each.req.html|safe}}</td>
+        {%if each.dev.html%}
+        <td>{{each.predev.html|safe|default:"NIL"}}</td>
+        {%else%}
         <td>{{each.predev.html|safe}}</td>
+        {%endif%}
         <td>{{each.dev.html|safe}}</td>
     </tr>
 {% endfor %}
