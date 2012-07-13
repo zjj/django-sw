@@ -65,6 +65,57 @@
             {%endif%}
         {%endfor%}
 </div>          
-
 </fieldset>
+{% if assessment %}
+<fieldset class="module aligned">
+<h1>风险评估</h1>
+<br>
+<form method="post" action="">
+<div class="form-row">
+{{assessment.assessment.label_tag}}
+{{assessment.assessment}}
+</div>
+<div class="form-row">
+<label></label>
+{% if not req.only_predev %}
+    {{assessment.need_predev}}{{assessment.need_predev.label}}
+    {{assessment.need_test}}{{assessment.need_test.label}}
+{% endif %}
+{% if not req.need_test and req.only_predev %}
+    {{assessment.need_test}}{{assessment.need_test.label}}
+{% endif %}
+</div>
+<div class="form-row">
+{{assessment.assessor.label_tag}}
+{% for i in assessor %}
+    {{i.first_name}}, 
+{% endfor %}
+</div>
+</div>
+</form>
+</fieldset>
+{%endif%}
+{%if rjef %}
+<fieldset class="module aligned">
+<h1>需求评审</h1>
+<div class="form-row">
+{{rjef.judgement.label_tag}}
+{{rjef.judgement}}
+</div>
+<div class="form-row">
+{{rjef.result.label_tag}}
+{{rjef.result}}
+</div>
+<div class="form-row">
+{{rjef.judges.label_tag}}
+{% for i in confirm %}
+    {% if i.signed %}
+        <font color=green> {{i.user.username}},</font>
+    {% else %}
+        <a href="/judgerequirementconfirm/{{i.user.username}}/{{index}}"> {{i.user.first_name}},</a>
+    {% endif %}
+{%endfor%}
+</div>
+</fieldset>
+{%endif%}
 </body>
