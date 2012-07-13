@@ -156,6 +156,7 @@ def viewrequirement(request, index):
     content = {}
     content.update({"index":index})
     adduser(content,request.user)
+    #req
     content.update({"username":request.user.first_name})
     r = Requirement.objects.filter(index=index)
     ancestor = r[0].author
@@ -167,6 +168,33 @@ def viewrequirement(request, index):
     r = RequirementEditForm(instance=r)
     content.update({"requirement":r})
     content.update({"rc":rc})
+    
+    #ass
+    try:
+        r = Requirement.objects.filter(index=index)
+        if len(r)!=0:
+            r = r[len(r)-1]
+        content.update({"req":r})
+        assessment = Assessment.objects.filter(requirement=r)
+        assessment = assessment[len(assessment)-1]
+        assessor = assessment.assessor.values()
+        content.update({"assessor":assessor})
+        assessment = AssessmentEditForm(instance=assessment)
+        content.update({"assessment":assessment})
+    except:
+        pass
+    #judge
+    try:
+        rj = RequireJudgement.objects.filter(requirement=r)
+        if len(rj) != 0:
+            rj = rj[len(rj)-1]
+            rjef = RequireJudgementEditForm(instance=rj)
+            content.update({"rjef":rjef})
+            s = RequireJudgementConfirm.objects.filter(requirement=r)
+            content.update({"confirm":s})
+    except:
+        pass
+        
     return render_to_response('jforms/viewrequirement.html',content)
 
 def requirementconfirm(request,username,index):
@@ -277,7 +305,7 @@ def editassessment(request,index):
                 #log
                 stage = u"requirement"
                 message = u"assessment was locked by %s"%request.user.first_name
-                html = '<a href="/judgerequirement/%s/">新建需求评审</a> <a href="/viewrequirement/%s/"> 查看需求详情</a>'%(index,index,)
+                html = u'<a href="/judgerequirement/%s/">新建需求评审</a> <a href="/viewrequirement/%s/"> 查看需求详情</a>'%(index,index,)
                 stat = stat 
                 log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
                 log.save()
@@ -286,7 +314,7 @@ def editassessment(request,index):
                     stage = u"requirement"
                     message = u"assessment was created by %s"%request.user.first_name
                     stat = stat 
-                    html = '<a href="/editassessment/%s/">编辑需求评估</a> <a href="/viewrequirement/%s/"> 查看需求详情</a>'%(index,index,)
+                    html = u'<a href="/editassessment/%s/">编辑需求评估</a> <a href="/viewrequirement/%s/"> 查看需求详情</a>'%(index,index,)
                     log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
                     log.save()
                 
@@ -474,8 +502,19 @@ def judgerequirementview(request,index):
         content.update({"message":"暂时无该编号的需求评审查看"})
         return render_to_response('jforms/message.html',content)
 
-
-
-
-
+def viewassessment(request,index):
+    content={}
+    content.update({"index":index})
+    content.update({"username":request.user.first_name})
+    r = Requirement.objects.filter(index=index)
+    if len(r)!=0:
+        r = r[len(r)-1]
+    content.update({"req":r})
+    assessment = Assessment.objects.filter(requirement=r)
+    assessment = assessment[len(assessment)-1]
+    assessor = assessment.assessor.values()
+    content.update({"assessor":assessor})
+    assessment = AssessmentEditForm(instance=assessment)
+    content.update({"assessment":assessment})
+    return render_to_response('jforms/viewassessment.html',content)
 

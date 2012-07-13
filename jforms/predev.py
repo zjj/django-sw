@@ -114,8 +114,7 @@ def predevjudge(request,index):
             content.update({"message":"预研评审已经保存."})
             if stat == "prelocked":
                 persons = set()
-                for i in pdj.judges.values():
-                    user = User.objects.get(id=i["id"])
+                for user in pdj.judges.all():
                     persons.add(user)
                 try:
                     persons.add(dept_manager("软件部"))
