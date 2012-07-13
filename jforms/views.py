@@ -30,7 +30,6 @@ def myhome(request):
         try: 
             ph = History.objects.filter(requirement=i,stage="predev")
             ph = ph[len(ph)-1]
-            print ph.html
             each.update({"predev":ph})
         except:
             pass
@@ -106,7 +105,6 @@ def myhome(request):
         try: 
             ph = History.objects.filter(requirement=i,stage="predev")
             ph = ph[len(ph)-1]
-            print ph.html
             each.update({"predev":ph})
         except:
             pass
