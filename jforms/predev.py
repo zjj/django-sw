@@ -136,6 +136,20 @@ def predevjudge(request,index):
                 log = History(requirement=r[len(r)-1],stage=stage,stat=stat,message=message,html=html,finished=False)
                 log.save()
 
+                try :# to mail them to confirm
+                    message="<a href=\"%s/viewpredevjudge/%s/\"> %s/viewpredevjudge/%s/</a>"%(settings.SERVER_ROOT,index,settings.SERVER_ROOT,index,)
+                    myemail=request.user.email
+                    author = request.user.first_name
+                    email_to=[]
+                    for i in persons:
+                        email_to.append(i.email)
+                    msg = EmailMessage('[%s]请您对软件需求表(%s号：%s)进行预研评审会签'%(author,index,r[0].require_name),message, myemail, email_to)
+                    msg.content_subtype = "html"
+                    msg.send()
+                except:
+                    pass
+
+
                 content.update({"message":"预研评审已经保存,并已定稿"})
             return render_to_response('jforms/message.html',content)
             
