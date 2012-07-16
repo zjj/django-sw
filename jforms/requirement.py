@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import permission_required
 from jforms.forms import *
 from jforms.functions import *
 import datetime
+from django.conf import settings
 
 def newrequirement(request):
     content = {}
@@ -122,7 +123,32 @@ def editrequirement(request, index):
                 for user in persons:
                     rc = RequirementConfirm.objects.create(requirement=requirement,signature=user,signed=False,accept=True)
                     rc.save()
+                try:# to mail them to accept
+                    message="<a href=\"%s/viewrequirement/%s/\"> %s/viewrequirement/%s/</a>"%(settings.SERVER_ROOT,index,settings.SERVER_ROOT,index,)
+                    myemail=request.user.email
+                    author = request.user.first_name
+                    email_to=[]
+                    for i in persons:
+                        email_to.append(i.email)
+                          
+                    msg = EmailMessage('[%s]请您对软件需求表(%s号：%s)进行需求确认会签'%(author,index,require_name),message, myemail, email_to)
+                    msg.content_subtype = "html"
+                    msg.send()
+                except:
+                    pass
                 
+                try:# to mail them just to tell them
+                    message="<a href=\"%s/viewrequirement/%s/\"> %s/viewrequirement/%s/</a>"%(settings.SERVER_ROOT,index,settings.SERVER_ROOT,index,)
+                    myemail=request.user.email
+                    author = request.user.first_name
+                    email_to=[]
+                    for i in cc:
+                        email_to.append(i.email)
+                    msg = EmailMessage('[%s]请您查看软件需求表(%s号：%s)'%(author,index,require_name),message, myemail, email_to)
+                    msg.content_subtype = "html"
+                    msg.send()
+                except:
+                    pass
                 #log 
                 stage = u"requirement"
                 message = u"requirement was prelocked"
@@ -390,6 +416,20 @@ def judgerequirement(request,index):
                 for user in persons:
                     rc = RequireJudgementConfirm.objects.create(requirement=r[len(r)-1],user=user,signed=False)
                     rc.save()
+                #email them
+                try :# to mail them to accept
+                    message="<a href=\"%s/judgerequirementview/%s/\"> %s/judgerequirementview/%s/</a>"%(settings.SERVER_ROOT,index,settings.SERVER_ROOT,index,)
+                    myemail=request.user.email
+                    author = request.user.first_name
+                    email_to=[]
+                    for i in persons:
+                        email_to.append(i.email)
+                    msg = EmailMessage('[%s]请您对软件需求表(%s号：%s)进行需求评审会签'%(author,index,r[0].require_name),message, myemail, email_to)
+                    msg.content_subtype = "html"
+                    msg.send()
+                except:
+                    pass
+            
             else:
                 if exist == False: 
                     stage = u"requirement"
