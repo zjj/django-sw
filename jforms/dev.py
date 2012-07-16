@@ -170,6 +170,19 @@ def devjudge(request,index):
                             <a href="/history/%s/"><sup> 历史</sup></a>'%(index,index,version,index)
                 log = History(requirement=r[len(r)-1],stage=stage,stat=stat,message=message,html=html,finished=False)
                 log.save()
+                    
+                if True :# to mail them to confirm
+                    message=u"<a href=\"%s/viewdevjudge/%s/\"> %s/viewdevjudge/%s/</a>"%(settings.SERVER_ROOT,index,settings.SERVER_ROOT,index,)
+                    myemail=request.user.email
+                    author = request.user.first_name
+                    email_to=[]
+                    for i in persons:
+                        email_to.append(i.email)
+                    msg = EmailMessage(u'[%s]请您对软件需求表(%s号：%s)进行研发评审会签'%(author,index,r[0].require_name),message, myemail, email_to)
+                    msg.content_subtype = "html"
+                    msg.send()
+                else:
+                    pass
 
             content.update({"message":"研发评审已保存，并且已经定稿",})
             return render_to_response("jforms/message.html",content)
