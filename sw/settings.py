@@ -164,3 +164,4 @@ EMAIL_PORT = 25
 EMAIL_HOST_USER = 'zhongjj@lemote.com'
 EMAIL_HOST_PASSWORD = 'Zhjj123-'
 
+SERVER_ROOT="http://127.0.0.1:8000"

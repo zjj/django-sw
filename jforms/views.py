@@ -90,10 +90,9 @@ def myhome(request):
 
     tjc = TestJudgementConfirm.objects.filter(signature=user,signed=False)
     for i in tjc:
-        h = History.objects.filter(requirement=i.devjudge.dev.requirement,finished=True)
+        h = History.objects.filter(requirement=i.testjudge.devjudge.dev.requirement,finished=True)
         if len(h) == 0:
-            ret.append(i.devjudge.dev.requirement)
-       
+            ret.append(i.testjudge.devjudge.dev.requirement)
     reqs = ret 
     req_set = set()
     for i in reqs:

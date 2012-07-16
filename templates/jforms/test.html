@@ -67,6 +67,10 @@ $(document).ready(function(){
 <label>{{test.explain.label_tag}}</label>
 {{test.explain}}
 </div>
+<script>
+var result= $("select#id_result").find("option:selected").attr("value");
+if (result != "success"){$("#jj").hide();}
+</script>
 
 </div>
 

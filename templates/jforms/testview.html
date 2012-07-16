@@ -4,6 +4,11 @@
 <title>测试评审,编号:{{index}}</title>
 {% include "jforms/head.html" %}
 {% include "jforms/mce_init.html" %}
+
+<link type="text/css" href="/static/jquery/css/ui-lightness/jquery-ui-1.8.21.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="/static/jquery/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="/static/jquery/js/jquery-ui-1.8.21.custom.min.js"></script>
+
 </head>
 <body class="change-form">
 {% include "jforms/toolbar.html" %}
@@ -38,6 +43,7 @@
 {{test.result}}
 </div>
 
+<div id="jj">
 <div class="form-row">
 <label>{{test.date.label_tag}}</label>
 {{test.date}}
@@ -47,6 +53,11 @@
 <label>{{test.explain.label_tag}}</label>
 {{test.explain}}
 </div>
+</div>
+<script>
+var result= $("select#id_result").find("option:selected").attr("value");
+if (result != "success"){$("#jj").hide();}
+</script>
 
 <div class="form-row">
 <label>评审人员:</label>
