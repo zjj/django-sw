@@ -58,6 +58,8 @@ def newrequirement(request):
             log.save()
         else:
             content.update({"requirement":r})
+            groups = Group.objects.all()
+            content.update({"groups":groups})
             return render_to_response('jforms/newrequirement.html',content)
         return render_to_response('jforms/new_successful.html',{"index":index})
     r = RequirementForm()
@@ -169,6 +171,18 @@ def editrequirement(request, index):
             return render_to_response('jforms/message.html',{"message":"本次修改已经保存","username":request.user.first_name})
         else:
             content.update({"requirement":r})
+            groups = Group.objects.all()
+            content.update({"groups":groups})
+         
+            r = Requirement.objects.filter(index=index)
+            ancestor = r[0].author
+            if len(r)!=0:
+                r = r[len(r)-1]
+                content.update({"req":r})
+            groups = Group.objects.all()
+            content.update({"groups":groups})
+            if ancestor == request.user:
+                content.update({"is_ancestor":"yes"})
             return render_to_response('jforms/editrequirement.html',content)
     
     content.update({"username":request.user.first_name})
