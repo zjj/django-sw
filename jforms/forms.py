@@ -52,7 +52,7 @@ class RequirementEditForm(ModelForm):
     
     class Meta:
         model = Requirement
-        exclude = ('index','time')
+        exclude = ('index','p_index','time')
 
 
 class AssessmentEditForm(ModelForm):

@@ -44,7 +44,7 @@ class Dept(models.Model):
 
 class Requirement(models.Model):
     index = models.IntegerField() 
-    index_inside = models.IntegerField() 
+    p_index = models.IntegerField(null=True,blank=True) 
     require_name = models.CharField(max_length=500)
     project = models.ForeignKey(Project,null=True,blank=True) 
     hardware = models.ForeignKey(Hardware,null=True,blank=True) 

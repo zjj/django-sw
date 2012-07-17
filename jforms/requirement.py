@@ -517,6 +517,18 @@ def judgerequirementconfirm(request,username, index):
                     p = p[len(p)-1]
                     p.stat = "locked"
                     p.save()
+                    
+                    if p.result != "reject":
+                        q1 = Q(project=r.project)
+                        q2 = Q(p_index__isnull=False)
+                        items_of_project = Requirement.objects.filter(q1&q2)
+                        if len(items_of_project) == 0:
+                            r.p_index = 1
+                        else:
+                            item = items_of_project[len(items_of_project)-1]
+                            r.p_index = item.p_index+1
+                        r.save()
+  
                     #log
                     stage = u"requirement"
                     message = u"judgement signature done:%s"%p.result
