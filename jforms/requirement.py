@@ -112,7 +112,6 @@ def editrequirement(request, index):
             #log 
             stage = u"requirement"
             message = u"requirement was edit by %s"%request.user.first_name
-            stat = u"unlocked" 
             html = '<a href="/editrequirement/%s/">编辑需求</a> <a href="/viewrequirement/%s/"> 查看需求</a>'%(index,index,)
             log = History(requirement=requirement,stage=stage,stat=stat,message=message,html=html,finished=False)
             log.save()
