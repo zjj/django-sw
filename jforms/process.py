@@ -47,7 +47,7 @@ def process(request):
             pass
         ret.append(each)
    
-    paginator = Paginator(ret,2)
+    paginator = Paginator(ret,20)
     page = request.GET.get('page')
     try:
         ret = paginator.page(page)
@@ -140,7 +140,7 @@ def filter(request):
             pass
         ret.append(each)
    
-    paginator = Paginator(ret,2)
+    paginator = Paginator(ret,20)
     page = request.GET.get('page')
     try:
         ret = paginator.page(page)
