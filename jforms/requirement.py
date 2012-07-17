@@ -371,10 +371,14 @@ def editassessment(request,index):
             return render_to_response('jforms/message.html',content)
     if len(assessment)!=0:
         assessment = assessment[len(assessment)-1]
+        content.update({"ass":assessment})
         assessment = AssessmentEditForm(instance=assessment)
     else:
         assessment = AssessmentEditForm()
     content.update({"assessment":assessment})
+    groups = Group.objects.all()
+    content.update({"groups":groups})
+    
     return render_to_response('jforms/editassessment.html',content)
 
 def judgerequirement(request,index):
