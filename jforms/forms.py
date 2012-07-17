@@ -117,10 +117,10 @@ TEST_RESULT_CHOICES = (('success','研发完成,需求结束'),
 
 class TestJudgeEditForm(ModelForm):
     overview = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 10}),label="测试评审结论:")
-    result = forms.ChoiceField(widget=Select,choices=TEST_RESULT_CHOICES,required = True)
+    result = forms.ChoiceField(widget=Select,choices=TEST_RESULT_CHOICES,required = False)
     judgement = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 20}),label="评审记录:")
-    date = forms.CharField(widget=forms.DateTimeInput(format="%Y-%m-%d",attrs={'class':"vDateField"}),label="完成时间:",required = True)
-    explain = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 10}),label="解释:")
+    date = forms.CharField(widget=forms.DateTimeInput(format="%Y-%m-%d",attrs={'class':"vDateField"}),label="完成时间:",required = False)
+    explain = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 10}),label="解释:",required=False)
     judges = myModelMultipleChoiceField(widget=CheckboxSelectMultiple,queryset=User.objects.all(),label="评审人员:",required = False)
     testapply = forms.FileField(required=True)
     testreport = forms.FileField(required=True)

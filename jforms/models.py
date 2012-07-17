@@ -44,9 +44,9 @@ class Dept(models.Model):
 class Requirement(models.Model):
     index = models.IntegerField() 
     require_name = models.CharField(max_length=500)
-    project = models.ForeignKey(Project,null=True) 
-    hardware = models.ForeignKey(Hardware,null=True) 
-    software_type = models.ForeignKey(SoftwareType,null=True)
+    project = models.ForeignKey(Project,null=True,blank=True) 
+    hardware = models.ForeignKey(Hardware,null=True,blank=True) 
+    software_type = models.ForeignKey(SoftwareType,null=True,blank=True)
     describle = models.TextField() 
     details = models.TextField() 
     author = models.ForeignKey(User)
@@ -54,8 +54,8 @@ class Requirement(models.Model):
     time = models.DateTimeField(auto_now=True)
     need_test = models.BooleanField()
     only_predev = models.BooleanField() 
-    executer = models.ManyToManyField(User,related_name='+',null=True)
-    cc = models.ManyToManyField(User,related_name='++',null=True)
+    executer = models.ManyToManyField(User,related_name='+',null=True,blank=True)
+    cc = models.ManyToManyField(User,related_name='++',null=True,blank=True)
     stat = models.CharField(max_length=10)  #unlocked prelocked locked
     class Meta:
         verbose_name = "需求"
@@ -68,7 +68,7 @@ class Requirement(models.Model):
 class RequirementConfirm(models.Model):
     requirement = models.ForeignKey(Requirement)
     signature = models.ForeignKey(User)
-    whosigned = models.ForeignKey(User,related_name="+",null=True)
+    whosigned = models.ForeignKey(User,related_name="+",null=True,blank=True)
     reason = models.TextField()
     accept = models.BooleanField() 
     signed = models.BooleanField() 
@@ -81,9 +81,9 @@ class History(models.Model):
     requirement = models.ForeignKey(Requirement)
     stage = models.CharField(max_length=1000)
     stat = models.CharField(max_length=1000)
-    message = models.CharField(max_length=1000,null=True)
+    message = models.CharField(max_length=1000,null=True,blank=True)
     finished = models.BooleanField()
-    html = models.CharField(max_length=1000,null=True)
+    html = models.CharField(max_length=1000,null=True,blank=True)
     time = models.DateTimeField(auto_now=True)
    
 class Assessment(models.Model):
@@ -122,7 +122,7 @@ class RequireJudgementConfirm(models.Model):
 class Development(models.Model):
     requirement = models.ForeignKey(Requirement)
     author = models.ForeignKey(User) 
-    version = models.IntegerField(null=True)
+    version = models.IntegerField(null=True,blank=True)
     bg = models.TextField() # background and development enviroment 
     design= models.TextField()
     time = models.DateTimeField(auto_now=True)
@@ -152,7 +152,7 @@ class DevJudgementConfirm(models.Model):
 class PreDevelopment(models.Model):
     requirement = models.ForeignKey(Requirement)
     author = models.ForeignKey(User) 
-    version = models.IntegerField(null=True)
+    version = models.IntegerField(null=True,blank=True)
     bg = models.TextField() # background and development enviroment 
     design= models.TextField()
     time = models.DateTimeField(auto_now=True)
@@ -161,10 +161,10 @@ class PreDevelopment(models.Model):
 
 #软件可行性分析报告 预研评审
 class PreDevJudgement(models.Model):
-    predev = models.ForeignKey(PreDevelopment,null=True)
-    author = models.ForeignKey(User,null=True)
-    testapply = models.FileField(upload_to="files/%Y/%m/%d",null=True)
-    testreport = models.FileField(upload_to="files/%Y/%m/%d",null=True)
+    predev = models.ForeignKey(PreDevelopment,null=True,blank=True)
+    author = models.ForeignKey(User,null=True,blank=True)
+    testapply = models.FileField(upload_to="files/%Y/%m/%d",null=True,blank=True)
+    testreport = models.FileField(upload_to="files/%Y/%m/%d",null=True,blank=True)
     overview = models.TextField()
     analysis = models.TextField()
     judgement = models.TextField()
@@ -183,24 +183,24 @@ class PreDevJudgementConfirm(models.Model):
 
 #测试评审
 class TestJudgement(models.Model):
-    predevjudge = models.ForeignKey(PreDevJudgement,null=True)
-    devjudge = models.ForeignKey(DevJudgement,null=True)
+    predevjudge = models.ForeignKey(PreDevJudgement,null=True,blank=True)
+    devjudge = models.ForeignKey(DevJudgement,null=True,blank=True)
     author = models.ForeignKey(User) 
     overview = models.TextField()
     judgement = models.TextField()
     result = models.CharField(max_length=100)
     judges = models.ManyToManyField(User,related_name="++++++")
-    date = models.DateTimeField(null=True)
-    explain = models.TextField(null=True)
+    date = models.DateTimeField(null=True,blank=True)
+    explain = models.TextField(null=True,blank=True)
     time = models.DateTimeField(auto_now=True)
     stat = models.CharField(max_length=10) # unlocked  locked done
-    testapply = models.FileField(upload_to="files/%Y/%m/%d",null=True)
-    testreport = models.FileField(upload_to="files/%Y/%m/%d",null=True)
+    testapply = models.FileField(upload_to="files/%Y/%m/%d",null=True,blank=True)
+    testreport = models.FileField(upload_to="files/%Y/%m/%d",null=True,blank=True)
 
 class TestJudgementConfirm(models.Model):
-    predevjudge = models.ForeignKey(PreDevJudgement,null=True)
-    devjudge = models.ForeignKey(DevJudgement,null=True)
-    testjudge = models.ForeignKey(TestJudgement,null=True)
+    predevjudge = models.ForeignKey(PreDevJudgement,null=True,blank=True)
+    devjudge = models.ForeignKey(DevJudgement,null=True,blank=True)
+    testjudge = models.ForeignKey(TestJudgement,null=True,blank=True)
     signature = models.ForeignKey(User)
     signed = models.BooleanField() 
     time = models.DateTimeField(auto_now=True)

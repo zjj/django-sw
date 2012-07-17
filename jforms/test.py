@@ -39,6 +39,7 @@ def testjudge(request,index):
            return render_to_response('jforms/message.html',content)
 
     if request.method == "POST":
+        date = request.POST.get("date","")
         tj = TestJudgeEditForm(request.POST,request.FILES)
         stat = request.POST.get("stat","unlocked")
         if tj.is_valid():
@@ -49,9 +50,16 @@ def testjudge(request,index):
             testreport = tj.cleaned_data["testreport"]
             explain = tj.cleaned_data["explain"]
             date = tj.cleaned_data["date"]
+            if date == u'':
+                date = None
             judges = tj.cleaned_data["judges"]
-            new_tj = TestJudgement.objects.create(devjudge=dj,author=request.user,overview=overview,\
+            if True:
+                new_tj = TestJudgement.objects.create(devjudge=dj,author=request.user,overview=overview,\
                             judgement=judgement,result=result,testapply=testapply,date=date,\
+                            testreport=testreport,explain=explain,stat=stat)
+            else:#sissy date
+                new_tj = TestJudgement.objects.create(devjudge=dj,author=request.user,overview=overview,\
+                            judgement=judgement,result=result,testapply=testapply,\
                             testreport=testreport,explain=explain,stat=stat)
             new_tj.judges=judges
             new_tj.save()
@@ -59,16 +67,24 @@ def testjudge(request,index):
             last_tj = TestJudgement.objects.filter(devjudge=dj)
             if len(last_tj) == 0:
                 last_tj = TestJudgeEditForm(request.POST,request.FILES)
-                content.update({"test":last_tj})
-                return render_to_response('jforms/test.html',content)
+                if last_tj.errors:
+                    content.update({"test":last_tj})
+                    return render_to_response('jforms/test.html',content)
+                last_tj.save()
             else:
                 last_tj = last_tj[len(last_tj)-1]
-                last_tj.pk = None
-                last_tj.save()
             new_tj = TestJudgeEditForm(request.POST,request.FILES,instance=last_tj)
-            new_tj = new_tj.save()
+            wow = new_tj
+            if new_tj.errors:
+                content.update({"test":new_tj})
+                return render_to_response('jforms/test.html',content)
+            new_tj = new_tj.save(commit=False)
+            if date == "":
+                new_tj.date = None
+            new_tj.pk = None
             new_tj.stat = stat
             new_tj.save()
+            wow.save_m2m()
         #log
         q1 = Q(version__isnull=False)
         q2 = Q(requirement=r)
@@ -117,6 +133,19 @@ def testjudge(request,index):
             stat = new_tj.stat
             log = History(requirement=r[len(r)-1],stage=stage,stat=stat,message=message,html=html,finished=False)
             log.save()
+
+            try :# to mail them to confirm
+                message=u"<a href=\"%s/testjudgeview/%s/\"> %s/testjudgeview/%s/</a>"%(settings.SERVER_ROOT,index,settings.SERVER_ROOT,index,)
+                myemail=request.user.email
+                author = request.user.first_name
+                email_to=[]
+                for i in persons:
+                    email_to.append(i.email)
+                msg = EmailMessage(u'[%s]请您对软件需求表(%s号：%s)进行测试评审会签'%(author,index,r[0].require_name),message, myemail, email_to)
+                msg.content_subtype = "html"
+                msg.send()
+            except:
+                pass
 
             content.update({"message":"测试评审定稿"})
             return render_to_response('jforms/message.html',content)
@@ -201,6 +230,7 @@ def testjudgeconfirm(request, username, index):
                     if tj.result == "failure":
                         stage = u"dev"
                         message = u"testjudge signature done: %s "%tj.result
+                        version = d.version
                         if version == "":
                             html = u'<font color=red>研发失败,需求放弃</font><a href="/testjudgeview/%s">查看测试评审</a> <a href="/viewdev/%s">查看研发</a> \
                                     <a href="/viewdevjudge/%s/">查看研发评审</a>'%(index,index,index)
