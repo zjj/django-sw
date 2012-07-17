@@ -4,6 +4,7 @@ from django.contrib.auth.models import Group, User
 
 class Project(models.Model):
     project = models.CharField(max_length=1000)
+    short = models.CharField(max_length=100)
     sold = models.BooleanField()
     pm =  models.ForeignKey(User)
     class Meta:
@@ -43,6 +44,7 @@ class Dept(models.Model):
 
 class Requirement(models.Model):
     index = models.IntegerField() 
+    index_inside = models.IntegerField() 
     require_name = models.CharField(max_length=500)
     project = models.ForeignKey(Project,null=True,blank=True) 
     hardware = models.ForeignKey(Hardware,null=True,blank=True) 
