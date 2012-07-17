@@ -7,8 +7,8 @@ class Hardware_c(admin.ModelAdmin):
     fields = list_display
 admin.site.register(Hardware, Hardware_c)
 class Project_c(admin.ModelAdmin):
-    list_display = ['project','sold','pm']
-    fields = ['project','sold','pm']
+    list_display = ['project','short','sold','pm']
+    fields = ['project','short','sold','pm']
 admin.site.register(Project,Project_c)
 class Dept_c(admin.ModelAdmin):
     list_display = ['group']

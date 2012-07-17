@@ -43,7 +43,7 @@ td,th
 <table>
           <tr> 
             <th scope="col"> <div class="text">编号</div><div class="clear"></div></th>
-            <th scope="col"> <div class="text">软件名称</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">需求名称</div><div class="clear"></div></th>
             <th scope="col"> <div class="text">所属项目</div><div class="clear"></div></th>
             <th scope="col"> <div class="text">软件类型</div><div class="clear"></div></th>
             <th scope="col"> <div class="text">硬件类型</div><div class="clear"></div></th>
@@ -55,7 +55,7 @@ td,th
 {% for each in list %}
     <tr>
         <td>{{each.requirement.index}}</td>
-        <td>{{each.requirement.require_name}}</td>
+        <td><a href="/viewrequirement/{{each.requirement.index}}/">{{each.requirement.require_name|slice:":20"}}</a></td>
         <td>{{each.requirement.project.project}}</td>
         <td>{{each.requirement.software_type.software_type}}</td>
         <td>{{each.requirement.hardware.hardware}}</td>

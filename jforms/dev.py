@@ -184,11 +184,15 @@ def devjudge(request,index):
                 except:
                     pass
 
-            content.update({"message":"研发评审已保存，并且已经定稿",})
+                content.update({"message":"研发评审已保存，并且已经定稿",})
+                return render_to_response("jforms/message.html",content)
+            content.update({"message":"研发评审已保存",})
             return render_to_response("jforms/message.html",content)
         else:
-            content.update({"message":"本次研发评审修改已保存",})
-            return render_to_response("jforms/message.html",content)
+            content["devjudge"]=djf
+            groups = Group.objects.all()
+            content.update({"groups":groups})
+            return render_to_response('jforms/devjudge.html',content)
             
     dj = DevJudgement.objects.filter(dev=d)
     if len(dj) != 0:

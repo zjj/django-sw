@@ -212,6 +212,11 @@ def viewrequirement(request, index):
     content.update({"username":request.user.first_name})
     r = Requirement.objects.filter(index=index)
     ancestor = r[0].author
+    content.update({"ancestor":ancestor})
+    
+    ancestor.groups.all()[0].name
+    content.update({"dept":ancestor.groups.all()[0].name})
+    
     if len(r)!=0:
         r = r[len(r)-1]
     content.update({"executer":r.executer})
@@ -219,8 +224,7 @@ def viewrequirement(request, index):
     rc = RequirementConfirm.objects.filter(requirement=r)
     r = RequirementEditForm(instance=r)
     content.update({"requirement":r})
-    content.update({"rc":rc})
-    
+    content.update({"rc":rc}) 
     #ass
     try:
         r = Requirement.objects.filter(index=index)
@@ -517,6 +521,18 @@ def judgerequirementconfirm(request,username, index):
                     p = p[len(p)-1]
                     p.stat = "locked"
                     p.save()
+                    
+                    if p.result != "reject":
+                        q1 = Q(project=r.project)
+                        q2 = Q(p_index__isnull=False)
+                        items_of_project = Requirement.objects.filter(q1&q2)
+                        if len(items_of_project) == 0:
+                            r.p_index = 1
+                        else:
+                            item = items_of_project[len(items_of_project)-1]
+                            r.p_index = item.p_index+1
+                        r.save()
+  
                     #log
                     stage = u"requirement"
                     message = u"judgement signature done:%s"%p.result

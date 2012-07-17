@@ -7,7 +7,18 @@
 <body class="change-form">
 {% include "jforms/toolbar.html" %}
 <fieldset class="module aligned">
-<h1>软件需求与规格({{index}})</h1>
+<h1 style="display:inline">软件需求与规格({{index}})</h1> <sub> {%if assessment%}<a href="#ass">风险评估</a> {%endif%}{%if rjef%}<a href="#judge">需求评审</a>{%endif%}</sub>
+<div class="form-row">
+<label></label>
+<table>
+<tr>
+<td>需求申请人:</td><td>{{dept}},{{ancestor.first_name}}</td>
+{% if req.p_index%}
+<td> 内部编号:</td><td>{{req.project.short}}-{{req.p_index}}</td>
+{%endif%} 
+</tr>
+</table>
+</div>
 <div class="form-row">
 {{requirement.require_name.label_tag}}{{requirement.require_name}} {{requirement.project}} {{requirement.software_type}} {{requirement.hardware}}
 </div>
@@ -67,7 +78,7 @@
 </div>          
 </fieldset>
 {% if assessment %}
-<fieldset class="module aligned">
+<fieldset id="ass" class="module aligned">
 <h1>风险评估</h1>
 <br>
 <form method="post" action="">
@@ -96,7 +107,7 @@
 </fieldset>
 {%endif%}
 {%if rjef %}
-<fieldset class="module aligned">
+<fieldset id="judge" class="module aligned">
 <h1>需求评审</h1>
 <div class="form-row">
 {{rjef.judgement.label_tag}}
