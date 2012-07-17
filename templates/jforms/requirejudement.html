@@ -3,6 +3,23 @@
 <title>软件需求表与评估表({{index}})</title>
 {% include "jforms/head.html" %}
 {% include "jforms/mce_init.html" %}
+
+<link type="text/css" href="/static/jquery/css/ui-lightness/jquery-ui-1.8.21.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="/static/jquery/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="/static/jquery/js/jquery-ui-1.8.21.custom.min.js"></script>
+<style type="text/css">
+    ul {margin: 0; padding: 0; width=300px;}
+    ul li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $("#id_judges").click(function(){
+   $("div#jj_judges").slideToggle();
+    })
+});
+</script>
+
 </head>
 <body class="change-form">
 {% include "jforms/toolbar.html" %}
@@ -19,8 +36,34 @@
 </div>
 <div class="form-row">
 {{rjef.judges.label_tag}}
-{{rjef.judges}}
+
+<a href=#jj_judges" id="id_judges">选择</a> <p>
+ <div id="jj_judges">
+    <label></label>
+    <table>
+        {% for g in groups%}
+        <tr>
+            <td>{{g.name}}:</td>
+            <td>
+            {%for u in g.user_set.all%}
+                 {%if u in rj.judges.all%}
+                        <input type="checkbox" checked="checked" name="judges" value="{{u.id}}" /> {{u.first_name}} 
+                 {%else%}
+                        <input type="checkbox" name="judges" value="{{u.id}}" /> {{u.first_name}} 
+                 {%endif%}
+            {%endfor%}
+            </td>
+        </tr>
+        {%endfor%}
+    </table>
+ </div>
 </div>
+</div>
+
+<script>
+ $("div#jj_judges").slideToggle();
+</script>
+
 <div class="form-row">
 <label></label>
 <input type="submit" value="保存" /> <input type="checkbox" name="stat" value="prelocked" />Lock

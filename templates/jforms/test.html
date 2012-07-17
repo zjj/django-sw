@@ -16,8 +16,13 @@ $(document).ready(function(){
         $("#jj").hide(); 
     else
         $("#jj").show();
+    });
+  
+  $("#id_judges").click(function(){
+   $("div#jj_judges").slideToggle();
     })
 });
+
 </script>
 
 </head>
@@ -76,7 +81,29 @@ if (result != "success"){$("#jj").hide();}
 
 <div class="form-row">
 <label>{{test.judges.label_tag}}</label>
-{{test.judges}}
+            <a href=#jj_judges" id="id_judges">选择</a> <p>
+             <div id="jj_judges">
+                <label></label>
+                <table>
+                    {% for g in groups%}
+                    <tr>
+                        <td>{{g.name}}:</td>
+                        <td>
+                        {%for u in g.user_set.all%}
+                             {%if u in tj.judges.all%}
+                                    <input type="checkbox" checked="checked" name="judges" value="{{u.id}}" /> {{u.first_name}}
+                             {%else%}
+                                    <input type="checkbox" name="judges" value="{{u.id}}" /> {{u.first_name}}
+                             {%endif%}
+                        {%endfor%}
+                        </td>
+                    </tr>
+                    {%endfor%}
+                </table>
+             </div>
+    <script>
+    $("div#jj_judges").slideToggle();
+    </script>
 </div>
 
 <div class="form-row">

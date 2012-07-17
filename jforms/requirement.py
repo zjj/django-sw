@@ -463,6 +463,7 @@ def judgerequirement(request,index):
     rj = RequireJudgement.objects.filter(requirement=r)
     if len(rj) != 0:
         rj = rj[len(rj)-1]
+        content.update({"rj":rj})
         if rj.stat == "locked" or rj.stat == "prelocked":
             content.update({"message":"评审无法进行修改"})
             return render_to_response('jforms/message.html',content)
@@ -470,6 +471,10 @@ def judgerequirement(request,index):
     else:
         rjef = RequireJudgementEditForm()
     content.update({"rjef":rjef})
+
+    groups = Group.objects.all()
+    content.update({"groups":groups})
+    
     return render_to_response('jforms/requirejudement.html',content)
 
 def judgerequirementconfirm(request,username, index):

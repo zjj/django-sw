@@ -177,6 +177,7 @@ def predevjudge(request,index):
         j = PreDevJudgeEditForm()
     else:
         pdj = pdj[len(pdj)-1]
+        content.update({"pdj":pdj})
         try:
             content.update({"testapply_name":pdj.testapply.name.split("/")[-1]})
             content.update({"testapply_url":pdj.testapply.url})
@@ -189,6 +190,8 @@ def predevjudge(request,index):
             pass
         j = PreDevJudgeEditForm(instance=pdj) 
     content["predevjudge"]=j
+    groups = Group.objects.all()
+    content.update({"groups":groups})
     return render_to_response('jforms/predev_judge.html',content)
 
 def predevconfirm(request,username,index):

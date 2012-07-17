@@ -155,8 +155,11 @@ def testjudge(request,index):
             tj = None
         else:
             tj = tj[len(tj)-1]
+            content.update({"tj":tj})
         test = TestJudgeEditForm(instance=tj)
         content.update({"test":test})
+        groups = Group.objects.all()
+        content.update({"groups":groups})
         return render_to_response('jforms/test.html',content)
 
     tj = TestJudgement.objects.filter(devjudge=dj)
@@ -164,6 +167,7 @@ def testjudge(request,index):
         test = TestJudgeEditForm()
     else:
         tj = tj[len(tj)-1]
+        content.update({"tj":tj})
         if tj.stat == "prelocked":
            content.update({"message":"测试评审暂时已经定稿，无法进行修改."})
            return render_to_response('jforms/message.html',content)
@@ -172,6 +176,9 @@ def testjudge(request,index):
            return render_to_response('jforms/message.html',content)
         test = TestJudgeEditForm(instance=tj)
     content.update({"test":test,})
+    groups = Group.objects.all()
+    content.update({"groups":groups})
+
     return render_to_response('jforms/test.html',content)
 
 def testjudgeconfirm(request, username, index):
