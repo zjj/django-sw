@@ -193,6 +193,7 @@ def devjudge(request,index):
     dj = DevJudgement.objects.filter(dev=d)
     if len(dj) != 0:
         dj = dj[len(dj)-1]
+        content.update({"dj":dj})
         if dj.stat == "prelocked" or dj.stat == "locked":
             content.update({"message":"该编号研发评审已经定稿，无法再次修改",})
             return render_to_response("jforms/message.html",content)
@@ -200,6 +201,8 @@ def devjudge(request,index):
     else:
         j = DevJudgeForm()
     content["devjudge"]=j
+    groups = Group.objects.all()
+    content.update({"groups":groups})
     return render_to_response('jforms/devjudge.html',content)
         
 
