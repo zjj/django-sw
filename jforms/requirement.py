@@ -62,6 +62,8 @@ def newrequirement(request):
         return render_to_response('jforms/new_successful.html',{"index":index})
     r = RequirementForm()
     content.update({"requirement":r})
+    groups = Group.objects.all()
+    content.update({"groups":groups})
     return render_to_response('jforms/newrequirement.html',content)
 
 def editrequirement(request, index):
@@ -69,12 +71,13 @@ def editrequirement(request, index):
     reload(sys)
     sys.setdefaultencoding('utf8')
     content = {}
+    content.update({"index":index})
     adduser(content,request.user)
     if request.method == "POST":
         last_r = Requirement.objects.filter(index=index)
         last_stat = last_r[len(last_r)-1].stat
         if last_stat == "prelocked" or last_stat == "locked":
-            return render_to_response('jforms/message.html',{"message":"需求无法进行修改"})
+            return render_to_response('jforms/message.html',{"message":u"需求无法进行修改"})
 
         r = RequirementForm(request.POST)
         if r.is_valid():
@@ -106,45 +109,52 @@ def editrequirement(request, index):
             requirement.cc = cc
             requirement.executer = executer
             requirement.save()
+            #log 
+            stage = u"requirement"
+            message = u"requirement was edit by %s"%request.user.first_name
+            stat = u"unlocked" 
+            html = '<a href="/editrequirement/%s/">编辑需求</a> <a href="/viewrequirement/%s/"> 查看需求</a>'%(index,index,)
+            log = History(requirement=requirement,stage=stage,stat=stat,message=message,html=html,finished=False)
+            log.save()
 
             if stat == "prelocked":
                 persons = set()
                 persons.add(myboss(request.user))
-                persons.add(dept_manager("软件部")) 
+                persons.add(dept_manager(u"软件部")) 
                 if executer is not None and len(executer)!=0 :
                     for i in executer:
                         persons.add(i)
                 if project is not None :
                     persons.add(pm(project))
                     if project.sold == True:
-                        persons.add(dept_manager("市场部")) 
-                        persons.add(dept_manager("客服部"))
-                        persons.add(dept_manager("销售部")) 
+                        persons.add(dept_manager(u"市场部")) 
+                        persons.add(dept_manager(u"客服部"))
+                        persons.add(dept_manager(u"销售部")) 
                 for user in persons:
                     rc = RequirementConfirm.objects.create(requirement=requirement,signature=user,signed=False,accept=True)
                     rc.save()
                 try:# to mail them to accept
-                    message="<a href=\"%s/viewrequirement/%s/\"> %s/viewrequirement/%s/</a>"%(settings.SERVER_ROOT,index,settings.SERVER_ROOT,index,)
+                    message=u"<a href=\"%s/viewrequirement/%s/\"> %s/viewrequirement/%s/</a>"%(settings.SERVER_ROOT,index,settings.SERVER_ROOT,index,)
                     myemail=request.user.email
                     author = request.user.first_name
                     email_to=[]
                     for i in persons:
                         email_to.append(i.email)
                           
-                    msg = EmailMessage('[%s]请您对软件需求表(%s号：%s)进行需求确认会签'%(author,index,require_name),message, myemail, email_to)
+                    msg = EmailMessage(u'[%s]请您对软件需求表(%s号：%s)进行需求确认会签'%(author,index,require_name),message, myemail, email_to)
                     msg.content_subtype = "html"
                     msg.send()
                 except:
                     pass
                 
                 try:# to mail them just to tell them
-                    message="<a href=\"%s/viewrequirement/%s/\"> %s/viewrequirement/%s/</a>"%(settings.SERVER_ROOT,index,settings.SERVER_ROOT,index,)
+                    message=u"<a href=\"%s/viewrequirement/%s/\"> %s/viewrequirement/%s/</a>"%(settings.SERVER_ROOT,index,settings.SERVER_ROOT,index,)
                     myemail=request.user.email
                     author = request.user.first_name
                     email_to=[]
                     for i in cc:
                         email_to.append(i.email)
-                    msg = EmailMessage('[%s]请您查看软件需求表(%s号：%s)'%(author,index,require_name),message, myemail, email_to)
+                    msg = EmailMessage(u'[%s]请您查看软件需求表(%s号：%s)'%(author,index,require_name),message, myemail, email_to)
                     msg.content_subtype = "html"
                     msg.send()
                 except:
@@ -167,12 +177,15 @@ def editrequirement(request, index):
     ancestor = r[0].author
     if len(r)!=0:
         r = r[len(r)-1]
+        content.update({"req":r})
     if r.stat == "prelocked":
         return render_to_response('jforms/message.html',{"message":"需求确认中，无法进行修改"})
     if r.stat == "locked":
         return render_to_response('jforms/message.html',{"message":"需求已经确认，无法进行修改"})
     r = RequirementEditForm(instance=r)
     content.update({"requirement":r})
+    groups = Group.objects.all()
+    content.update({"groups":groups})
     if ancestor == request.user:
         content.update({"is_ancestor":"yes"})
     return render_to_response('jforms/editrequirement.html',content)

@@ -58,7 +58,20 @@ $(document).ready(function(){
  <a href=#jj_executer" id="id_executer">选择</a> <p>
  <div id="jj_executer">
     <label></label>
-    {{requirement.executer}}
+    <table>
+        {% for g in groups%}
+        {%if g.name == "软件部"%}
+        <tr>
+            <td>{{g.name}}:</td>
+            <td>
+            {%for u in g.user_set.all%}
+            <input type="checkbox" name="executer" value="{{u.id}}" /> {{u.first_name}} 
+            {%endfor%}
+            </td>
+        </tr>
+        {%endif%}
+        {%endfor%}
+    </table>
  </div>
 </div>
 
@@ -66,9 +79,22 @@ $(document).ready(function(){
 {{requirement.cc.label_tag}} <a href=#jj_cc" id="id_cc">选择</a> <p>
 <div id="jj_cc">
     <label></label>
-    {{requirement.cc}}
+    <table>
+        {% for g in groups%}
+        <tr>
+            <td>{{g.name}}:</td>
+            <td>
+            {%for u in g.user_set.all%}
+            <input type="checkbox" name="cc" value="{{u.id}}" /> {{u.first_name}} 
+            {%endfor%}
+            </td>
+        </tr>
+        {%endfor%}
+    </table>
+
 </div>
 </div>
+
 <script>
  $("div#jj_cc").slideToggle();
  $("div#jj_executer").slideToggle();
