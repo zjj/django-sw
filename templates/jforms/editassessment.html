@@ -20,8 +20,6 @@ $(document).ready(function(){
 });
 </script>
 
-
-
 </head>
 <body class="change-form">
 {% include "jforms/toolbar.html" %}
@@ -71,6 +69,11 @@ $(document).ready(function(){
 </div>
 {{assessment.errors.assessor}}
 </div>
+
+<script>
+ $("div#jj_assessor").slideToggle();
+</script>
+
 <div class="form-row">
    <label></label> <input type="submit" value="保存" />
    <input type="checkbox" name="stat" value="locked" />Lock
