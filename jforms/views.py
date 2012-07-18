@@ -12,12 +12,10 @@ from jforms.forms import *
 from jforms.functions import *
 import datetime
 
-
-
 @login_required(login_url="/login/")
 def myhome(request):
     if not request.user.is_authenticated():
-        return HttpResponseRedirect('/login/?next=%s' % request.path)
+        return HttpResponseRedirect('/process/')
     content = {}
     adduser(content,request.user)
     reqs = Requirement.objects.filter(author=request.user)
