@@ -42,6 +42,14 @@ class Dept(models.Model):
     def __unicode__(self):
         return unicode(self.group)
 
+class Center(models.Model):
+    name = models.CharField(max_length=100)
+    groups = models.ManyToManyField(Dept)
+    boss = models.ForeignKey(User)
+    
+    def __unicode__(self):
+        return unicode(self.name)
+
 class Requirement(models.Model):
     index = models.IntegerField() 
     p_index = models.IntegerField(null=True,blank=True) 

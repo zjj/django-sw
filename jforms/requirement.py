@@ -93,6 +93,7 @@ def editrequirement(request, index):
             need_test = r.cleaned_data['need_test']
             expired_date = r.cleaned_data['expired_date']
             cc = r.cleaned_data['cc']
+            print cc
             executer = r.cleaned_data['executer']
             stat = request.POST.get('stat','unlocked')
             
@@ -147,7 +148,13 @@ def editrequirement(request, index):
                     msg.send()
                 except:
                     pass
-                
+                if 1: 
+                    cc.append(centerboss(request.user))
+                    cc.append(centerbossof(u"研发中心"))
+                    cc.append(centerbossof(u"业务中心"))
+                else:
+                    pass
+                 
                 try:# to mail them just to tell them
                     message=u"<a href=\"%s/viewrequirement/%s/\"> %s/viewrequirement/%s/</a>"%(settings.SERVER_ROOT,index,settings.SERVER_ROOT,index,)
                     myemail=request.user.email
@@ -155,7 +162,7 @@ def editrequirement(request, index):
                     email_to=[]
                     for i in cc:
                         email_to.append(i.email)
-                    msg = EmailMessage(u'[%s]请您查看软件需求表(%s号：%s)'%(author,index,require_name),message, myemail, email_to)
+                    msg = EmailMessage(u'[%s]请您知悉软件需求表(%s号：%s)'%(author,index,require_name),message, myemail, email_to)
                     msg.content_subtype = "html"
                     msg.send()
                 except:
