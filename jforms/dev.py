@@ -239,6 +239,7 @@ def viewdevjudge_id(request,id):
         content.update({"username":request.user.first_name})
             
     dj = DevJudgement.objects.get(id=id)
+    content.update({"index":dj.dev.requirement.index})
     j = DevJudgeEditForm(instance=dj)
     content["devjudge"]=j
     judges = DevJudgementConfirm.objects.filter(devjudge=dj)
@@ -351,7 +352,9 @@ def viewdev_id(request,id):
     content={}
     if request.user.is_authenticated():
         content.update({"username":request.user.first_name})
-    d = Development.objects.get(id=id) 
+    
+    d = Development.objects.get(id=id)
+    content.update({"index":d.requirement.index})
     content.update({"dev":d})
     return render_to_response('jforms/viewdev.html',content)
 

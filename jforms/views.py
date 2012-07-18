@@ -12,7 +12,6 @@ from jforms.forms import *
 from jforms.functions import *
 import datetime
 
-@login_required(login_url="/login/")
 def myhome(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/process/')
