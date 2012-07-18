@@ -322,6 +322,7 @@ def viewtestjudge_id(request,id):
     if request.user.is_authenticated():
         content.update({"username":request.user.first_name})
     tj = TestJudgement.objects.get(id=id)
+    content.update({"index":tj.devjudge.dev.requirement.index})
     testapply = {}
     testreport = {}
     testapply["url"] = tj.testapply.url
