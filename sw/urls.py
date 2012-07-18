@@ -5,6 +5,8 @@ admin.autodiscover()
 def i18n_javascript(request):
     return admin.site.i18n_javascript(request)
 
+handler403="jforms.handler403.handler403"
+
 urlpatterns = patterns('',
     url(r'^admin/jsi18n', i18n_javascript),
     url(r'admin/', include(admin.site.urls)),
