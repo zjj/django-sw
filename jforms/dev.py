@@ -12,7 +12,7 @@ from jforms.forms import *
 from jforms.functions import *
 import datetime
 
-@login_required(login_url="/login/")
+@permission_required("jforms.change_development",login_url='/login/',raise_exception=True)
 def dev(request, index):
     content={}
     content.update({"index":index})
@@ -82,11 +82,11 @@ def dev(request, index):
     return render_to_response('jforms/dev.html',content)
 
 
-@login_required(login_url="/login/")
 def viewdev(request,index):
     content={}
     content.update({"index":index})
-    content.update({"username":request.user.first_name})
+    if request.user.is_authenticated():
+        content.update({"username":request.user.first_name})
     r = Requirement.objects.filter(index=index)
     r = r[len(r)-1]
     
@@ -97,7 +97,7 @@ def viewdev(request,index):
     return render_to_response('jforms/viewdev.html',content)
 
 #内部验证(研发评审)
-@login_required(login_url="/login/")
+@permission_required("jforms.change_devjudgement",login_url='/login/',raise_exception=True)
 def devjudge(request,index):
     content={}
     content.update({"index":index})
@@ -214,11 +214,11 @@ def devjudge(request,index):
     return render_to_response('jforms/devjudge.html',content)
         
 
-@login_required(login_url="/login/")
 def viewdevjudge(request,index):
     content={}
     content.update({"index":index})
-    content.update({"username":request.user.first_name})
+    if request.user.is_authenticated():
+        content.update({"username":request.user.first_name})
     r = Requirement.objects.filter(index=index)
     r = r[len(r)-1]
     d = Development.objects.filter(requirement=r)
@@ -233,10 +233,10 @@ def viewdevjudge(request,index):
     content.update({"judges":judges})
     return render_to_response('jforms/viewdevjudge.html',content)
 
-@login_required(login_url="/login/")
 def viewdevjudge_id(request,id):
     content={}
-    content.update({"username":request.user.first_name})
+    if request.user.is_authenticated():
+        content.update({"username":request.user.first_name})
             
     dj = DevJudgement.objects.get(id=id)
     j = DevJudgeEditForm(instance=dj)
@@ -347,10 +347,10 @@ def devjudgeconfirm(request,username,index):
 
     return render_to_response('jforms/testconfirm.html',content)
 
-@login_required(login_url="/login/")
 def viewdev_id(request,id):
     content={}
-    content.update({"username":request.user.first_name})
+    if request.user.is_authenticated():
+        content.update({"username":request.user.first_name})
     d = Development.objects.get(id=id) 
     content.update({"dev":d})
     return render_to_response('jforms/viewdev.html',content)
