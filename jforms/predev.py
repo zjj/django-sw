@@ -12,7 +12,8 @@ from jforms.forms import *
 from jforms.functions import *
 import datetime
 
-@login_required(login_url="/login/")
+
+@permission_required("jforms.change_predevelopment",login_url='/login/',raise_exception=True)
 def predev(request, index):
     content={}
     content.update({"index":index})
@@ -63,7 +64,7 @@ def predev(request, index):
     return render_to_response('jforms/predev.html',content)
 
 #内部验证(可行性分析报告)
-@login_required(login_url="/login/")
+@permission_required("jforms.change_predevjudgement",login_url='/login/',raise_exception=True)
 def predevjudge(request,index):
     content={}
     content.update({"index":index})
@@ -265,11 +266,11 @@ def predevconfirm(request,username,index):
     return render_to_response('jforms/testconfirm.html',content)
 
 
-@login_required(login_url="/login/")
 def viewpredevjudge(request,index):
     content={}
     content.update({"index":index})
-    content.update({"username":request.user.first_name})
+    if request.user.is_authenticated():
+        content.update({"username":request.user.first_name})
     r = Requirement.objects.filter(index=index)
     r = r[len(r)-1]
     content.update({"req":r})
@@ -299,11 +300,11 @@ def viewpredevjudge(request,index):
     content.update({"judges":pdjc})
     return render_to_response('jforms/view_predev_judge.html',content)
     
-@login_required(login_url="/login/")
 def viewpredev(request,index):
     content={}
     content.update({"index":index})
-    content.update({"username":request.user.first_name})
+    if request.user.is_authenticated():
+        content.update({"username":request.user.first_name})
     r = Requirement.objects.filter(index=index)
     r = r[len(r)-1]
     j = PreDevelopment.objects.filter(requirement=r) 
