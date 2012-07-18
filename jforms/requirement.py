@@ -12,7 +12,7 @@ from jforms.functions import *
 import datetime
 from django.conf import settings
 
-@login_required(login_url="/login/")
+@permission_required("jforms.change_requirement",login_url='/login/',raise_exception=True)
 def newrequirement(request):
     content = {}
     adduser(content,request.user)
@@ -70,7 +70,7 @@ def newrequirement(request):
     content.update({"groups":groups})
     return render_to_response('jforms/newrequirement.html',content)
 
-@login_required(login_url="/login/")
+@permission_required("jforms.change_requirement",login_url='/login/',raise_exception=True)
 def editrequirement(request, index):
     import sys
     reload(sys)
@@ -214,13 +214,12 @@ def editrequirement(request, index):
     return render_to_response('jforms/editrequirement.html',content)
 
 
-@login_required(login_url="/login/")
 def viewrequirement(request, index):
     content = {}
     content.update({"index":index})
-    adduser(content,request.user)
+    if request.user.is_authenticated():
+        adduser(content,request.user)
     #req
-    content.update({"username":request.user.first_name})
     r = Requirement.objects.filter(index=index)
     ancestor = r[0].author
     content.update({"ancestor":ancestor})
@@ -303,7 +302,7 @@ def requirementconfirm(request,username,index):
                 stage = u"requirement"
                 message = u"requirement was reject"
                 stat = u"aborted"
-                html = '<font color=red>有确认人员拒绝需求<font> <a href="/viewrequirement/%s/"> 查看详情</a>'%(index,)
+                html = u'<font color=red>有确认人员拒绝需求<font> <a href="/viewrequirement/%s/"> 查看详情</a>'%(index,)
                 log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=True)
                 log.save()
             else:
@@ -314,7 +313,7 @@ def requirementconfirm(request,username,index):
                     stage = u"requirement"
                     message = u"requirement was accept"
                     stat = u"accept"
-                    html = '<a href="/editassessment/%s/"> 新建风险评估 </a> <a href="/viewrequirement/%s/"> 查看需求详情</a>'%(index,index)
+                    html = u'<a href="/editassessment/%s/"> 新建风险评估 </a> <a href="/viewrequirement/%s/"> 查看需求详情</a>'%(index,index)
                     log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
                     log.save()
         return render_to_response("jforms/message.html",{"message":"需求确认成功！"});
@@ -341,7 +340,7 @@ def requirementconfirm(request,username,index):
     content.update({"index":index})
     return render_to_response('jforms/requirementconfirm.html',content)
 
-@login_required(login_url="/login/")
+@permission_required("jforms.change_assessment",login_url='/login/',raise_exception=True)
 def editassessment(request,index):
     content={}
     content.update({"index":index})
@@ -412,7 +411,7 @@ def editassessment(request,index):
     
     return render_to_response('jforms/editassessment.html',content)
 
-@login_required(login_url="/login/")
+@permission_required("jforms.change_requirejudgement",login_url='/login/',raise_exception=True)
 def judgerequirement(request,index):
     content={}
     content.update({"index":index})
@@ -589,11 +588,11 @@ def judgerequirementconfirm(request,username, index):
      
     return render_to_response('jforms/requirejudementconfirm.html',content)
      
-@login_required(login_url="/login/")
 def judgerequirementview(request,index):
     content={}
     content.update({"index":index})
-    content.update({"username":request.user.first_name})
+    if request.user.is_authenticated():
+        content.update({"username":request.user.first_name})
     r = Requirement.objects.filter(index=index)
     if len(r) != 0:
         r=r[len(r)-1]
@@ -609,11 +608,11 @@ def judgerequirementview(request,index):
         content.update({"message":"暂时无该编号的需求评审查看"})
         return render_to_response('jforms/message.html',content)
 
-@login_required(login_url="/login/")
 def viewassessment(request,index):
     content={}
     content.update({"index":index})
-    content.update({"username":request.user.first_name})
+    if request.user.is_authenticated():
+        content.update({"username":request.user.first_name})
     r = Requirement.objects.filter(index=index)
     if len(r)!=0:
         r = r[len(r)-1]
