@@ -12,11 +12,10 @@ from jforms.forms import *
 from jforms.functions import *
 import datetime
 
-#测试评审
-@login_required(login_url="/login/")
 def process(request):
     content = {}
-    content.update({"username":request.user.first_name})
+    if request.user.is_authenticated():
+        content.update({"username":request.user.first_name})
     reqs = Requirement.objects.all()
     req_set = set()
     for i in reqs:
@@ -80,10 +79,10 @@ def process(request):
 
     return render_to_response("jforms/process.html",content)
 
-@login_required(login_url="/login/")
 def filter(request):
     content = {}
-    content.update({"username":request.user.first_name})
+    if request.user.is_authenticated():
+        content.update({"username":request.user.first_name})
     project = request.GET.get("project","none")
     if project != "none":
         project = Project.objects.get(project=project) 
