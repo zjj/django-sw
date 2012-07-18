@@ -13,7 +13,7 @@ from jforms.functions import *
 import datetime
 
 #测试评审
-@login_required(login_url="/login/")
+@permission_required("jforms.change_testjudgement",login_url='/login/',raise_exception=True)
 def testjudge(request,index):
     content={}
     content.update({"index":index})
@@ -290,11 +290,11 @@ def testjudgeconfirm(request, username, index):
 
     return render_to_response('jforms/testconfirm.html',content)
 
-@login_required(login_url="/login/")
 def testjudgeview(request,index):
     content={}
     content.update({"index":index})
-    content.update({"username":request.user.first_name})
+    if request.user.is_authenticated():
+        content.update({"username":request.user.first_name})
     r = Requirement.objects.filter(index=index)
     r = r[len(r)-1]
     d = Development.objects.filter(requirement=r)
@@ -317,9 +317,10 @@ def testjudgeview(request,index):
     content.update({"test":test,})
     return render_to_response('jforms/testview.html',content)
 
-@login_required(login_url="/login/")
 def viewtestjudge_id(request,id):
     content={}
+    if request.user.is_authenticated():
+        content.update({"username":request.user.first_name})
     tj = TestJudgement.objects.get(id=id)
     testapply = {}
     testreport = {}
@@ -334,5 +335,4 @@ def viewtestjudge_id(request,id):
     test = TestJudgeEditForm(instance=tj)
     content.update({"test":test,})
     return render_to_response('jforms/testview.html',content)
-
 
