@@ -13,11 +13,11 @@ from jforms.functions import *
 import datetime
 
 
-@login_required(login_url="/login/")
 def history(request,index):
     content={}
     content.update({"index":index})
-    content.update({"username":request.user.first_name})
+    if request.user.is_authenticated():
+        content.update({"username":request.user.first_name})
 
     r = Requirement.objects.filter(index=index)
     r = r[len(r)-1]
