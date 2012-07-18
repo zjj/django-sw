@@ -1,4 +1,5 @@
 #coding=utf-8
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.db.models import Max
 from django.contrib.auth.models import User,Group
@@ -13,6 +14,7 @@ import datetime
 
 
 
+@login_required(login_url="/login/")
 def myhome(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/?next=%s' % request.path)
