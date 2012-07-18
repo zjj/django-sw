@@ -9,11 +9,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from jforms.models import Requirement, Hardware, Project, SoftwareType, Assessment
 from jforms.models import *
 from django.core.mail import send_mail,EmailMessage
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response,get_object_or_404
 from django.http import HttpResponse,HttpResponseRedirect
 from django.conf import settings
-from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import authenticate
 from django.forms.models import modelformset_factory
@@ -21,6 +19,7 @@ from django.forms.widgets import RadioSelect, CheckboxSelectMultiple, Select, Se
 from django.forms import ModelForm
 
 class myModelMultipleChoiceField(forms.ModelMultipleChoiceField):
+
     def label_from_instance(self, obj):
         return  "%s" % (obj.first_name,)
 

@@ -1,6 +1,7 @@
 #coding=utf-8
 from django.db.models import Q
 from django.db.models import Max
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User,Group
 from jforms.models import Requirement, Hardware, Project, SoftwareType, Dept, RequirementConfirm, History
 from django.shortcuts import render_to_response
@@ -12,6 +13,7 @@ from jforms.functions import *
 import datetime
 
 #测试评审
+@login_required(login_url="/login/")
 def testjudge(request,index):
     content={}
     content.update({"index":index})
@@ -181,6 +183,7 @@ def testjudge(request,index):
 
     return render_to_response('jforms/test.html',content)
 
+@login_required(login_url="/login/")
 def testjudgeconfirm(request, username, index):
     content={}
     content.update({"index":index})
@@ -287,6 +290,7 @@ def testjudgeconfirm(request, username, index):
 
     return render_to_response('jforms/testconfirm.html',content)
 
+@login_required(login_url="/login/")
 def testjudgeview(request,index):
     content={}
     content.update({"index":index})
@@ -313,6 +317,7 @@ def testjudgeview(request,index):
     content.update({"test":test,})
     return render_to_response('jforms/testview.html',content)
 
+@login_required(login_url="/login/")
 def viewtestjudge_id(request,id):
     content={}
     tj = TestJudgement.objects.get(id=id)

@@ -1,4 +1,5 @@
 #coding=utf-8
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.db.models import Max
 from django.contrib.auth.models import User,Group
@@ -11,6 +12,7 @@ from jforms.forms import *
 from jforms.functions import *
 import datetime
 
+@login_required(login_url="/login/")
 def predev(request, index):
     content={}
     content.update({"index":index})
@@ -61,6 +63,7 @@ def predev(request, index):
     return render_to_response('jforms/predev.html',content)
 
 #内部验证(可行性分析报告)
+@login_required(login_url="/login/")
 def predevjudge(request,index):
     content={}
     content.update({"index":index})
@@ -194,6 +197,7 @@ def predevjudge(request,index):
     content.update({"groups":groups})
     return render_to_response('jforms/predev_judge.html',content)
 
+@login_required(login_url="/login/")
 def predevconfirm(request,username,index):
     content={}
     content.update({"index":index})
@@ -261,6 +265,7 @@ def predevconfirm(request,username,index):
     return render_to_response('jforms/testconfirm.html',content)
 
 
+@login_required(login_url="/login/")
 def viewpredevjudge(request,index):
     content={}
     content.update({"index":index})
@@ -294,6 +299,7 @@ def viewpredevjudge(request,index):
     content.update({"judges":pdjc})
     return render_to_response('jforms/view_predev_judge.html',content)
     
+@login_required(login_url="/login/")
 def viewpredev(request,index):
     content={}
     content.update({"index":index})

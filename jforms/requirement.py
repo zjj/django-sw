@@ -1,5 +1,6 @@
 #coding=utf-8
 from django.db.models import Max
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User,Group
 from jforms.models import Requirement, Hardware, Project, SoftwareType, Dept, RequirementConfirm, History
 from django.shortcuts import render_to_response
@@ -11,6 +12,7 @@ from jforms.functions import *
 import datetime
 from django.conf import settings
 
+@login_required(login_url="/login/")
 def newrequirement(request):
     content = {}
     adduser(content,request.user)
@@ -68,6 +70,7 @@ def newrequirement(request):
     content.update({"groups":groups})
     return render_to_response('jforms/newrequirement.html',content)
 
+@login_required(login_url="/login/")
 def editrequirement(request, index):
     import sys
     reload(sys)
@@ -148,11 +151,11 @@ def editrequirement(request, index):
                     msg.send()
                 except:
                     pass
-                if 1: 
+                try: 
                     cc.append(centerboss(request.user))
                     cc.append(centerbossof(u"研发中心"))
                     cc.append(centerbossof(u"业务中心"))
-                else:
+                except:
                     pass
                  
                 try:# to mail them just to tell them
@@ -211,6 +214,7 @@ def editrequirement(request, index):
     return render_to_response('jforms/editrequirement.html',content)
 
 
+@login_required(login_url="/login/")
 def viewrequirement(request, index):
     content = {}
     content.update({"index":index})
@@ -260,6 +264,7 @@ def viewrequirement(request, index):
         
     return render_to_response('jforms/viewrequirement.html',content)
 
+@login_required(login_url="/login/")
 def requirementconfirm(request,username,index):
     import sys 
     reload(sys)
@@ -336,6 +341,7 @@ def requirementconfirm(request,username,index):
     content.update({"index":index})
     return render_to_response('jforms/requirementconfirm.html',content)
 
+@login_required(login_url="/login/")
 def editassessment(request,index):
     content={}
     content.update({"index":index})
@@ -406,6 +412,7 @@ def editassessment(request,index):
     
     return render_to_response('jforms/editassessment.html',content)
 
+@login_required(login_url="/login/")
 def judgerequirement(request,index):
     content={}
     content.update({"index":index})
@@ -502,6 +509,7 @@ def judgerequirement(request,index):
     
     return render_to_response('jforms/requirejudement.html',content)
 
+@login_required(login_url="/login/")
 def judgerequirementconfirm(request,username, index):
     content={}
     content.update({"index":index})
@@ -581,6 +589,7 @@ def judgerequirementconfirm(request,username, index):
      
     return render_to_response('jforms/requirejudementconfirm.html',content)
      
+@login_required(login_url="/login/")
 def judgerequirementview(request,index):
     content={}
     content.update({"index":index})
@@ -600,6 +609,7 @@ def judgerequirementview(request,index):
         content.update({"message":"暂时无该编号的需求评审查看"})
         return render_to_response('jforms/message.html',content)
 
+@login_required(login_url="/login/")
 def viewassessment(request,index):
     content={}
     content.update({"index":index})

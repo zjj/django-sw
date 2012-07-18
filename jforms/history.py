@@ -1,6 +1,7 @@
 #coding=utf-8
 from django.db.models import Q
 from django.db.models import Max
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User,Group
 from jforms.models import Requirement, Hardware, Project, SoftwareType, Dept, RequirementConfirm, History
 from django.shortcuts import render_to_response
@@ -12,6 +13,7 @@ from jforms.functions import *
 import datetime
 
 
+@login_required(login_url="/login/")
 def history(request,index):
     content={}
     content.update({"index":index})

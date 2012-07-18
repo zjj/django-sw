@@ -1,5 +1,6 @@
 #coding=utf-8
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 from django.db.models import Max
 from django.contrib.auth.models import User,Group
 from jforms.models import Requirement, Hardware, Project, SoftwareType, Dept, RequirementConfirm, History
@@ -12,6 +13,7 @@ from jforms.functions import *
 import datetime
 
 #测试评审
+@login_required(login_url="/login/")
 def process(request):
     content = {}
     content.update({"username":request.user.first_name})
@@ -78,6 +80,7 @@ def process(request):
 
     return render_to_response("jforms/process.html",content)
 
+@login_required(login_url="/login/")
 def filter(request):
     content = {}
     content.update({"username":request.user.first_name})
@@ -171,6 +174,7 @@ def filter(request):
 
     return render_to_response("jforms/process.html",content)
 
+@login_required(login_url="/login/")
 def search(request):
     pass
     

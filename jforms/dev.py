@@ -1,6 +1,7 @@
 #coding=utf-8
 from django.db.models import Q
 from django.db.models import Max
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User,Group
 from jforms.models import Requirement, Hardware, Project, SoftwareType, Dept, RequirementConfirm, History
 from django.shortcuts import render_to_response
@@ -11,6 +12,7 @@ from jforms.forms import *
 from jforms.functions import *
 import datetime
 
+@login_required(login_url="/login/")
 def dev(request, index):
     content={}
     content.update({"index":index})
@@ -80,6 +82,7 @@ def dev(request, index):
     return render_to_response('jforms/dev.html',content)
 
 
+@login_required(login_url="/login/")
 def viewdev(request,index):
     content={}
     content.update({"index":index})
@@ -94,6 +97,7 @@ def viewdev(request,index):
     return render_to_response('jforms/viewdev.html',content)
 
 #内部验证(研发评审)
+@login_required(login_url="/login/")
 def devjudge(request,index):
     content={}
     content.update({"index":index})
@@ -210,6 +214,7 @@ def devjudge(request,index):
     return render_to_response('jforms/devjudge.html',content)
         
 
+@login_required(login_url="/login/")
 def viewdevjudge(request,index):
     content={}
     content.update({"index":index})
@@ -228,6 +233,7 @@ def viewdevjudge(request,index):
     content.update({"judges":judges})
     return render_to_response('jforms/viewdevjudge.html',content)
 
+@login_required(login_url="/login/")
 def viewdevjudge_id(request,id):
     content={}
     content.update({"username":request.user.first_name})
@@ -239,6 +245,7 @@ def viewdevjudge_id(request,id):
     content.update({"judges":judges})
     return render_to_response('jforms/viewdevjudge.html',content)
 
+@login_required(login_url="/login/")
 def devjudgeconfirm(request,username,index):
     content={}
     content.update({"index":index})
@@ -340,6 +347,7 @@ def devjudgeconfirm(request,username,index):
 
     return render_to_response('jforms/testconfirm.html',content)
 
+@login_required(login_url="/login/")
 def viewdev_id(request,id):
     content={}
     content.update({"username":request.user.first_name})
