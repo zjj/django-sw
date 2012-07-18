@@ -93,9 +93,87 @@ DEV_RESULT_CHOICES = (('test','提交测试'),
                   ('amend','研发修正'),
                   ('failure', '需求放弃'))
 
+class mybgTextarea(forms.Textarea):
+        
+    def render(self, name, value, attrs=None):
+        if value is None: 
+            value = """
+<p>验证环境描述：</p> <table style="width: 410px; height: 197px;" border="1" align="left"> <tbody> <tr> <td>机型：</td> <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td> <td>&nbsp;CPU:</td> <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td> </tr> <tr> <td>PMON：</td> <td>&nbsp;</td> <td>&nbsp;Memory:</td> <td>&nbsp;</td> </tr> <tr> <td>EC：</td> <td>&nbsp;</td> <td>&nbsp;VGA:</td> <td>&nbsp;</td> </tr> <tr> <td>&nbsp;OS：</td> <td>&nbsp;</td> <td>&nbsp;Audio:</td> <td>&nbsp;</td> </tr> <tr> <td>&nbsp;EC Module:</td> <td>&nbsp;</td> <td>&nbsp;Lan:</td> <td>&nbsp;</td> </tr> <tr> <td>&nbsp;Kernel:</td> <td>&nbsp;</td> <td>&nbsp;Wifi:</td> <td>&nbsp;</td> </tr> <tr> <td>&nbsp;Fn Key:</td> <td>&nbsp;</td> <td>&nbsp;Camera:</td> <td>&nbsp;</td> </tr> </tbody> </table> 
+"""
+        return forms.Textarea.render(self,name,value,attrs)
+
+class mytestTextarea(forms.Textarea):
+    
+    def render(self, name, value, attrs=None):
+        if value is None: 
+            value = """
+<p>验证记录：</p>
+<table style="width: 516px; height: 179px;" border="1" align="left">
+<tbody>
+<tr>
+<td>验证项目</td>
+<td>验证通过描述</td>
+<td>结果</td>
+<td>备注</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+"""
+        return forms.Textarea.render(self,name,value,attrs)
+
+
 class DevJudgeForm(forms.Form):
-    bg = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 20}),label="内部验证环境:")
-    testinside = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 20}),label="内部验证:")
+    bg = forms.CharField(widget=mybgTextarea(attrs={'cols': 80, 'rows': 20}),label="内部验证环境:")
+    testinside = forms.CharField(widget=mytestTextarea(attrs={'cols': 80, 'rows': 20}),label="内部验证:")
     judgement = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 20}),label="评审内容:")
     result = forms.ChoiceField(widget=Select,choices=DEV_RESULT_CHOICES,label="评审结论:",required = False)
     judges = myModelMultipleChoiceField(widget=CheckboxSelectMultiple,queryset=User.objects.all(),label="评审人员:",required = False)
@@ -103,7 +181,7 @@ class DevJudgeForm(forms.Form):
 class DevJudgeEditForm(ModelForm):
     bg = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 20}),label="内部验证环境:")
     testinside = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 20}),label="内部验证:")
-    judgement = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 20}),label="评审内容:")
+    judgement = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 20 }),label="评审内容:")
     result = forms.ChoiceField(widget=Select,choices=DEV_RESULT_CHOICES,label="评审结论:",required = False)
     judges = myModelMultipleChoiceField(widget=CheckboxSelectMultiple,queryset=User.objects.all(),label="评审人员:",required = False)
     class Meta:
