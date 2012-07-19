@@ -118,12 +118,12 @@ def predevjudge(request,index):
             pdj.save()
             prestat =stat
             if stat == "prelocked":
-                if pdj.testapply.name == "": 
+                if pdj.testapply.name == "" or pdj.testapply == None: 
                     content.update({"testapply_error":"测试申请单未上传"})
                     stat = "unlocked"
                     pdj.stat = "unlocked"
                     pdj.save()
-                if pdj.testreport.name == "": 
+                if pdj.testreport.name == "" or pdj.testreport == None: 
                     content.update({"testreport_error":"测试申请单未上传"})
                     stat = "unlocked"
                     pdj.stat = "unlocked"
