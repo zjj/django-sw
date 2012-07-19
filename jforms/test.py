@@ -77,12 +77,14 @@ def testjudge(request,index):
             if stat == "prelocked":
                 if new_tj.testapply.name == "":
                     content.update({"testapply_error":"测试申请单未上传"})
+                    stat = "unlocked"
+                    new_tj.stat = "unlocked"
+                    new_tj.save()
                 if new_tj.testreport.name == "":
                     content.update({"testreport_error":"测试申请单未上传"})
-                new_tj.stat = "unlocked"
-                new_tj.save()
-                stat = "unlocked"
-
+                    stat = "unlocked"
+                    new_tj.stat = "unlocked"
+                    new_tj.save()
         else:
             try:
                 content.update({"testapply_name":tj.testapply.name.split("/")[-1]})
