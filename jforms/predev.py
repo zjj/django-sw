@@ -200,7 +200,7 @@ def predevjudge(request,index):
         j = PreDevJudgeEditForm()
     else:
         pdj = pdj[len(pdj)-1]
-        if pdj.stat == "prelocked" or last.stat == "locked":
+        if pdj.stat == "prelocked" or pdj.stat == "locked":
             content.update({"message":"已经锁定，无法再进行修改",})
             return render_to_response("jforms/message.html",content)
         content.update({"pdj":pdj})
