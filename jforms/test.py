@@ -75,16 +75,82 @@ def testjudge(request,index):
             new_tj.judges=judges
             new_tj.save()
             if stat == "prelocked":
-                if new_tj.testapply.name == "":
+                if new_tj.testapply.name == "" or new_tj.testapply == None:
                     content.update({"testapply_error":"测试申请单未上传"})
                     stat = "unlocked"
                     new_tj.stat = "unlocked"
                     new_tj.save()
-                if new_tj.testreport.name == "":
+                if new_tj.testreport.name == "" or new_tj.testreport == None:
                     content.update({"testreport_error":"测试申请单未上传"})
                     stat = "unlocked"
                     new_tj.stat = "unlocked"
                     new_tj.save()
+
+            #log
+            q1 = Q(version__isnull=False)
+            q2 = Q(requirement=r)
+            ver = Development.objects.filter(q1&q2)
+            if len(ver) == 0:
+                version = ""
+            else:
+                version = ver[len(ver)-1].version+1
+            stage = u"dev"
+            message = u"testjudge was edited by %s "%request.user.username
+            if version =="":
+                html = u'<a href="/testjudge/%s">编辑测试评审</a> <a href="/testjudgeview/%s">查看测试评审</a> <a href="/viewdev/%s">查看研发</a> \
+                        <a href="/viewdevjudge/%s/">查看研发评审</a>'%(index,index,index,index)
+            else:
+                html = u'<a href="/testjudge/%s">编辑测试评审</a> <sup><font color=red>第%s次修正</font></sup> <a href="/testjudgeview/%s">查看测试评审</a> <a href="/viewdev/%s">查看研发</a> \
+                        <a href="/viewdevjudge/%s/">查看研发评审</a> <a href="/history/%s/"><sup>历史</sup></a>'%(index,version-1,index,index,index,index)
+            stat = new_tj.stat
+            log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
+            log.save()
+
+            if stat == "prelocked":
+                persons = set()
+                for user in new_tj.judges.all():
+                    persons.add(user)
+                try:
+                    persons.add(dept_manager("软件部"))
+                    persons.add(dept_manager("测试部"))
+                except:
+                    pass
+                r = Requirement.objects.filter(index=index)
+                ancestor = r[0].author
+                project = r[len(r)-1].project
+                persons.add(myboss(ancestor))
+                persons.add(pm(project))
+                for i in persons:
+                    tjc = TestJudgementConfirm.objects.create(testjudge=new_tj,signature=i,signed=False)
+                #log
+                stage = u"dev"
+                message = u"testjudge was edited by %s "%request.user.username
+                if version == "":
+                    html = u'测试评审中 <a href="/testjudgeview/%s">查看测试评审</a> <a href="/viewdev/%s">查看研发</a> \
+                            <a href="/viewdevjudge/%s/">查看研发评审</a>'%(index,index,index)
+                else:
+                    html = u'测试评审中 <a href="/testjudgeview/%s">查看测试评审</a> <a href="/viewdev/%s">查看研发</a> \
+                            <a href="/viewdevjudge/%s/">查看研发评审</a> <a href="/history/%s/"><sup>历史</sup></a>'%(index,index,index,index)
+                stat = new_tj.stat
+                log = History(requirement=r[len(r)-1],stage=stage,stat=stat,message=message,html=html,finished=False)
+                log.save()
+
+                try :# to mail them to confirm
+                    message=u"<a href=\"%s/testjudgeview/%s/\"> %s/testjudgeview/%s/</a>"%(settings.SERVER_ROOT,index,settings.SERVER_ROOT,index,)
+                    myemail=request.user.email
+                    author = request.user.first_name
+                    email_to=[]
+                    for i in persons:
+                        email_to.append(i.email)
+                    msg = EmailMessage(u'[%s]请您对软件需求表(%s号：%s)进行测试评审会签'%(author,index,r[0].require_name),message, myemail, email_to)
+                    msg.content_subtype = "html"
+                    msg.send()
+                except:
+                    pass
+
+                content.update({"message":"测试评审定稿"})
+                return render_to_response('jforms/message.html',content)
+
         else:
             try:
                 content.update({"testapply_name":tj.testapply.name.split("/")[-1]})
@@ -100,70 +166,6 @@ def testjudge(request,index):
             content.update({"test":tjf})
             return render_to_response('jforms/test.html',content)
 
-        #log
-        q1 = Q(version__isnull=False)
-        q2 = Q(requirement=r)
-        ver = Development.objects.filter(q1&q2)
-        if len(ver) == 0:
-            version = ""
-        else:
-            version = ver[len(ver)-1].version+1
-        stage = u"dev"
-        message = u"testjudge was edited by %s "%request.user.username
-        if version =="":
-            html = u'<a href="/testjudge/%s">编辑测试评审</a> <a href="/testjudgeview/%s">查看测试评审</a> <a href="/viewdev/%s">查看研发</a> \
-                    <a href="/viewdevjudge/%s/">查看研发评审</a>'%(index,index,index,index)
-        else:
-            html = u'<a href="/testjudge/%s">编辑测试评审</a> <sup><font color=red>第%s次修正</font></sup> <a href="/testjudgeview/%s">查看测试评审</a> <a href="/viewdev/%s">查看研发</a> \
-                    <a href="/viewdevjudge/%s/">查看研发评审</a> <a href="/history/%s/"><sup>历史</sup></a>'%(index,version-1,index,index,index,index)
-        stat = new_tj.stat
-        log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
-        log.save()
-
-        if stat == "prelocked":
-            persons = set()
-            for user in new_tj.judges.all():
-                persons.add(user)
-            try:
-                persons.add(dept_manager("软件部"))
-                persons.add(dept_manager("测试部"))
-            except:
-                pass
-            r = Requirement.objects.filter(index=index)
-            ancestor = r[0].author
-            project = r[len(r)-1].project
-            persons.add(myboss(ancestor))
-            persons.add(pm(project))
-            for i in persons:
-                tjc = TestJudgementConfirm.objects.create(testjudge=new_tj,signature=i,signed=False)
-            #log
-            stage = u"dev"
-            message = u"testjudge was edited by %s "%request.user.username
-            if version == "":
-                html = u'测试评审中 <a href="/testjudgeview/%s">查看测试评审</a> <a href="/viewdev/%s">查看研发</a> \
-                        <a href="/viewdevjudge/%s/">查看研发评审</a>'%(index,index,index)
-            else:
-                html = u'测试评审中 <a href="/testjudgeview/%s">查看测试评审</a> <a href="/viewdev/%s">查看研发</a> \
-                        <a href="/viewdevjudge/%s/">查看研发评审</a> <a href="/history/%s/"><sup>历史</sup></a>'%(index,index,index,index)
-            stat = new_tj.stat
-            log = History(requirement=r[len(r)-1],stage=stage,stat=stat,message=message,html=html,finished=False)
-            log.save()
-
-            try :# to mail them to confirm
-                message=u"<a href=\"%s/testjudgeview/%s/\"> %s/testjudgeview/%s/</a>"%(settings.SERVER_ROOT,index,settings.SERVER_ROOT,index,)
-                myemail=request.user.email
-                author = request.user.first_name
-                email_to=[]
-                for i in persons:
-                    email_to.append(i.email)
-                msg = EmailMessage(u'[%s]请您对软件需求表(%s号：%s)进行测试评审会签'%(author,index,r[0].require_name),message, myemail, email_to)
-                msg.content_subtype = "html"
-                msg.send()
-            except:
-                pass
-
-            content.update({"message":"测试评审定稿"})
-            return render_to_response('jforms/message.html',content)
 
     tj = TestJudgement.objects.filter(devjudge=dj)
     if len(tj) == 0:
@@ -194,9 +196,6 @@ def testjudge(request,index):
         content.update({"testreport_url":last_testreport.url})
     except:
         pass
-
-    groups = Group.objects.all()
-    content.update({"groups":groups})
 
     return render_to_response('jforms/test.html',content)
 
