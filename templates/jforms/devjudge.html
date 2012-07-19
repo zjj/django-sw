@@ -55,11 +55,13 @@ $(document).ready(function(){
                         <td>{{g.name}}:</td>
                         <td>
                         {%for u in g.user_set.all%}
+                        {%if u.is_active%}
                              {%if u in dj.judges.all%}
                                     <input type="checkbox" checked="checked" name="judges" value="{{u.id}}" /> {{u.first_name}} 
                              {%else%}
                                     <input type="checkbox" name="judges" value="{{u.id}}" /> {{u.first_name}}
                              {%endif%}
+                        {%endif%}
                         {%endfor%}
                         </td>
                     </tr>
