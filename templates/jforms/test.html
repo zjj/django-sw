@@ -41,11 +41,11 @@ $(document).ready(function(){
 <table>
     <tr>
     <td>测试申请:<a href ="{{testapply_url}}">{{testapply_name}}</a> </td>
-    <td><input type="file" name="testapply" /><br></td>
+    <td><input type="file" name="testapply" /><br></td><td><font color=red>{{testapply_error}}</font></td>
     </tr>
     <tr>
-    <td>测试报告:<a href ="{{testreport_url}}">{{testreport_name}}</a> </td>
-    <td><input type="file" name="testreport" /></td>
+    <td>测试报告:<a href ="{{testreport_url}}">{{testreport_name}}</a></td>
+    <td><input type="file" name="testreport" /></td><td><font color=red>{{testreport_error}}</font></td>
     </tr>
 </table>
 </div>
