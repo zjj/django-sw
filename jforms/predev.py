@@ -72,6 +72,8 @@ def predevjudge(request,index):
     content={}
     content.update({"index":index})
     content.update({"username":request.user.first_name})
+    groups = Group.objects.all()
+    content.update({"groups":groups})
     r = Requirement.objects.filter(index=index)
     r = r[len(r)-1]
     content.update({"req":r})
