@@ -333,8 +333,8 @@ def requirementconfirm(request,username,index):
             content.update({"message":"确认已经被用户本人确认"})
             return render_to_response("jforms/message.html",content);
         else:
-            content.update({"message":"确认已经由%s代理确认"%(rs.whosigned.first_name,)}
-            return render_to_response("jforms/message.html",content);
+            content.update({"message":"确认已经由%s代理确认"%(rs.whosigned.first_name,)})
+            return render_to_response("jforms/message.html",content)
 
     if username == request.user.username:
         content.update({"agent":"no"})
