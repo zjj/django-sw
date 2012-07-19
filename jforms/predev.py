@@ -82,6 +82,9 @@ def predevjudge(request,index):
         last = PreDevJudgement.objects.filter(predev=d)
         if len(last) >0:
             last = last[len(last)-1]
+            if last.stat == "prelocked" or last.stat == "locked":
+                content.update({"message":"已经锁定，无法再进行修改",})
+                return render_to_response("jforms/message.html",content)
             last_testapply = last.testapply
             last_testreport = last.testreport
         else:
@@ -109,14 +112,28 @@ def predevjudge(request,index):
             pdj.author = request.user
             pdj.stat = stat
             pdj.save()
+            prestat =stat
+            if stat == "prelocked":
+                if pdj.testapply.name == "": 
+                    content.update({"testapply_error":"测试申请单未上传"})
+                    stat = "unlocked"
+                    pdj.stat = "unlocked"
+                    pdj.save()
+                if pdj.testreport.name == "": 
+                    content.update({"testreport_error":"测试申请单未上传"})
+                    stat = "unlocked"
+                    pdj.stat = "unlocked"
+                    pdj.save()
+            
             #log
             stage = u"predev"
             message = u"predevjudge was edited by %s"%request.user.username
             html = u'<a href="/predevjudge/%s/">编辑预研评审</a> <a href="/viewpredev/%s">查看预研</a> <a href="/viewpredevjudge/%s/">查看评审详情</a>'%(index,index,index)
             log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
             log.save()
-
-            content.update({"message":"预研评审已经保存."})
+            if prestat != "prelocked":
+                content.update({"message":"预研评审已经保存."})
+                return render_to_response('jforms/message.html',content)
             if stat == "prelocked":
                 persons = set()
                 for user in pdj.judges.all():
@@ -154,8 +171,7 @@ def predevjudge(request,index):
                 except:
                     pass
                 content.update({"message":"预研评审已经保存,并已定稿"})
-
-            return render_to_response('jforms/message.html',content)
+                return render_to_response('jforms/message.html',content)
         else:
             pdj = PreDevJudgement.objects.filter(predev=d)
             if len(pdj) == 0:
@@ -180,6 +196,9 @@ def predevjudge(request,index):
         j = PreDevJudgeEditForm()
     else:
         pdj = pdj[len(pdj)-1]
+        if pdj.stat == "prelocked" or last.stat == "locked":
+            content.update({"message":"已经锁定，无法再进行修改",})
+            return render_to_response("jforms/message.html",content)
         content.update({"pdj":pdj})
         try:
             content.update({"testapply_name":pdj.testapply.name.split("/")[-1]})
