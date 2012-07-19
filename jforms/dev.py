@@ -65,8 +65,10 @@ def dev(request, index):
                         <a href="/viewdev/%s">查看研发</a> <a href="/history/%s/"><sup>历史</sup></a>'%(index,version,index,index)
             log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
             log.save()
-            return render_to_response("jforms/message.html",{"message":"本次研发结束"})
-        return render_to_response("jforms/message.html",{"message":"本次已经保存，下次可继续进行修改",})
+            content.update({"message":"本次研发结束"})
+            return render_to_response("jforms/message.html",content)
+        content.update({"message":"本次已经保存，下次可继续进行修改",})
+        return render_to_response("jforms/message.html",content)
     
     j = Development.objects.filter(requirement=r) 
     if len(j) != 0:

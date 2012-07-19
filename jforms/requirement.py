@@ -63,7 +63,8 @@ def newrequirement(request):
             groups = Group.objects.all()
             content.update({"groups":groups})
             return render_to_response('jforms/newrequirement.html',content)
-        return render_to_response('jforms/new_successful.html',{"index":index})
+        content.update({"index":index})
+        return render_to_response('jforms/new_successful.html',content)
     r = RequirementForm()
     content.update({"requirement":r})
     groups = Group.objects.all()
@@ -82,7 +83,8 @@ def editrequirement(request, index):
         last_r = Requirement.objects.filter(index=index)
         last_stat = last_r[len(last_r)-1].stat
         if last_stat == "prelocked" or last_stat == "locked":
-            return render_to_response('jforms/message.html',{"message":u"需求无法进行修改"})
+            content.update({"message":u"需求无法进行修改"})
+            return render_to_response('jforms/message.html',content)
 
         r = RequirementForm(request.POST)
         if r.is_valid():
@@ -96,7 +98,6 @@ def editrequirement(request, index):
             need_test = r.cleaned_data['need_test']
             expired_date = r.cleaned_data['expired_date']
             cc = r.cleaned_data['cc']
-            print cc
             executer = r.cleaned_data['executer']
             stat = request.POST.get('stat','unlocked')
             
@@ -177,8 +178,8 @@ def editrequirement(request, index):
                 html = '需求确认中 <a href="/viewrequirement/%s/"> 查看需求</a>'%(index,)
                 log = History(requirement=requirement,stage=stage,stat=stat,message=message,html=html,finished=False)
                 log.save()
-
-            return render_to_response('jforms/message.html',{"message":"本次修改已经保存","username":request.user.first_name})
+            content.update({"message":"本次修改已经保存",})
+            return render_to_response('jforms/message.html',content)
         else:
             content.update({"requirement":r})
             groups = Group.objects.all()
@@ -201,10 +202,9 @@ def editrequirement(request, index):
     if len(r)!=0:
         r = r[len(r)-1]
         content.update({"req":r})
-    if r.stat == "prelocked":
-        return render_to_response('jforms/message.html',{"message":"需求确认中，无法进行修改"})
-    if r.stat == "locked":
-        return render_to_response('jforms/message.html',{"message":"需求已经确认，无法进行修改"})
+    if r.stat == "prelocked" or r.stat=="locked":
+        content.update({"message":"需求确认中，无法进行修改"})
+        return render_to_response('jforms/message.html',content)
     r = RequirementEditForm(instance=r)
     content.update({"requirement":r})
     groups = Group.objects.all()
@@ -268,6 +268,8 @@ def requirementconfirm(request,username,index):
     import sys 
     reload(sys)
     sys.setdefaultencoding('utf8') 
+    content = {}
+    adduser(content,request.user)
     if request.method == "POST":
         reason = request.POST.get("txt","")
         result = request.POST.get("result","")
@@ -316,27 +318,30 @@ def requirementconfirm(request,username,index):
                     html = u'<a href="/editassessment/%s/"> 新建风险评估 </a> <a href="/viewrequirement/%s/"> 查看需求详情</a>'%(index,index)
                     log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
                     log.save()
-        return render_to_response("jforms/message.html",{"message":"需求确认成功！"});
+        content.update({"message":"需求确认成功！"})
+        return render_to_response("jforms/message.html",content);
 
-    content = {}
     user = User.objects.get(username = username)
     if myboss(request.user) != user  and username != request.user.username:
-        return render_to_response("jforms/message.html",{"message":"无权进行需求确认并且无权代理此人进行需求确认！"});
+        content.update({"message":"无权进行需求确认并且无权代理此人进行需求确认！"})
+        return render_to_response("jforms/message.html",content);
     r = Requirement.objects.filter(index=index)
     r = r[len(r)-1]
     rc = RequirementConfirm.objects.get(requirement=r,signature=user)
     if rc.signed == True:
         if rc.whosigned == rc.signature:
-            return render_to_response("jforms/message.html",{"message":"确认已经被用户本人确认"});
+            content.update({"message":"确认已经被用户本人确认"})
+            return render_to_response("jforms/message.html",content);
         else:
-            return render_to_response("jforms/message.html",{"message":"确认已经由%s代理确认"%(rs.whosigned.first_name,)});
+            content.update({"message":"确认已经由%s代理确认"%(rs.whosigned.first_name,)})
+            return render_to_response("jforms/message.html",content)
 
     if username == request.user.username:
         content.update({"agent":"no"})
     else:
         content.update({"agent":"yes"})
     
-    content.update({"username":username})
+    content.update({"username1":username})
     content.update({"index":index})
     return render_to_response('jforms/requirementconfirm.html',content)
 
