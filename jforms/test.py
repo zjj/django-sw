@@ -311,10 +311,16 @@ def testjudgeview(request,index):
     tj = tj[len(tj)-1]
     testapply = {}
     testreport = {}
-    testapply["url"] = tj.testapply.url
-    testapply["name"] = tj.testapply.name.split("/")[-1]
-    testreport["url"] = tj.testreport.url
-    testreport["name"] = tj.testreport.name.split("/")[-1]
+    try:
+        testapply["url"] = tj.testapply.url
+        testapply["name"] = tj.testapply.name.split("/")[-1]
+    except:
+        pass
+    try:
+        testreport["url"] = tj.testreport.url
+        testreport["name"] = tj.testreport.name.split("/")[-1]
+    except:
+        pass
     content.update({"testapply":testapply})
     content.update({"testreport":testreport})
     s = TestJudgementConfirm.objects.filter(testjudge=tj)
