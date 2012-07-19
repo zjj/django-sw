@@ -46,9 +46,10 @@ def predev(request, index):
             html = u'<a href="/predevjudge/%s/">新建预研评审</a> <a href="/viewpredev/%s">查看预研</a>'%(index,index)
             log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
             log.save()
-    
-            return render_to_response("jforms/message.html",{"message":"本次预研结束"})
-        return render_to_response("jforms/message.html",{"message":"本次已经保存，下次可继续进行修改",})
+            content.update({"message":"本次预研结束"}) 
+            return render_to_response("jforms/message.html",content)
+        content.update({"message":"本次已经保存，下次可继续进行修改",})
+        return render_to_response("jforms/message.html",content)
     
     j = PreDevelopment.objects.filter(requirement=r) 
     if len(j) != 0:

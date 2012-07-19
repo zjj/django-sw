@@ -9,7 +9,7 @@
 <body class="change-form">
 {% include "jforms/toolbar.html" %}
 <h1>需求确认({{index}})</h1>
-<form method="POST" action="/requirementconfirm/{{username}}/{{index}}/">
+<form method="POST" action="/requirementconfirm/{{username1}}/{{index}}/">
 <input type="hidden" name="agent" value="{{agent}}" />
 <fieldset class="module aligned">
         {% if agent == "yes" %}
