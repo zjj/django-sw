@@ -32,63 +32,63 @@ def testjudge(request,index):
     d = d[len(d)-1]
     dj = DevJudgement.objects.filter(dev=d)
     dj = dj[len(dj)-1]
-    tj = TestJudgement.objects.filter(devjudge=dj)
-    if len(tj) != 0:
-        tj = tj[len(tj)-1]
-        if tj.stat == "prelocked":
-           content.update({"message":"测试评审暂时已经定稿，无法进行修改."})
-           return render_to_response('jforms/message.html',content)
-        if tj.stat == "locked":
-           content.update({"message":"测试已经评审完毕，无法进行修改."})
-           return render_to_response('jforms/message.html',content)
 
-    if request.method == "POST":
-        date = request.POST.get("date","")
-        tj = TestJudgeEditForm(request.POST,request.FILES)
+    if request.method == "POST": 
+        tj = TestJudgement.objects.filter(devjudge=dj)
+        if len(tj) > 0:
+            tj = tj[len(tj)-1]
+            content.update({"tj":tj})
+            last_testapply = tj.testapply
+            last_testreport = tj.testreport
+        else:
+            last_testapply = None
+            last_testreport = None
+
+        try:  
+            testapply = request.FILES.get("testapply",None)
+            if testapply == None:
+                testapply = last_testapply
+        except:
+            pass
+
+        try:
+            testreport = request.FILES.get("testreport",None)
+            if testreport == None:
+                testreport = last_testreport
+        except:
+            pass
+
+        tjf = TestJudgeEditForm(request.POST,request.FILES)
         stat = request.POST.get("stat","unlocked")
-        if tj.is_valid():
-            overview = tj.cleaned_data["overview"]
-            judgement = tj.cleaned_data["judgement"]
-            result = tj.cleaned_data["result"]
-            testapply = tj.cleaned_data["testapply"]
-            testreport = tj.cleaned_data["testreport"]
-            explain = tj.cleaned_data["explain"]
-            date = tj.cleaned_data["date"]
+        if tjf.is_valid():
+            overview = tjf.cleaned_data["overview"]
+            judgement = tjf.cleaned_data["judgement"]
+            result = tjf.cleaned_data["result"]
+            explain = tjf.cleaned_data["explain"]
+            date = tjf.cleaned_data["date"]
             if date == u'':
                 date = None
-            judges = tj.cleaned_data["judges"]
-            if True:
-                new_tj = TestJudgement.objects.create(devjudge=dj,author=request.user,overview=overview,\
+            judges = tjf.cleaned_data["judges"]
+            new_tj = TestJudgement.objects.create(devjudge=dj,author=request.user,overview=overview,\
                             judgement=judgement,result=result,testapply=testapply,date=date,\
-                            testreport=testreport,explain=explain,stat=stat)
-            else:#sissy date
-                new_tj = TestJudgement.objects.create(devjudge=dj,author=request.user,overview=overview,\
-                            judgement=judgement,result=result,testapply=testapply,\
                             testreport=testreport,explain=explain,stat=stat)
             new_tj.judges=judges
             new_tj.save()
         else:
-            last_tj = TestJudgement.objects.filter(devjudge=dj)
-            if len(last_tj) == 0:
-                last_tj = TestJudgeEditForm(request.POST,request.FILES)
-                if last_tj.errors:
-                    content.update({"test":last_tj})
-                    return render_to_response('jforms/test.html',content)
-                last_tj.save()
-            else:
-                last_tj = last_tj[len(last_tj)-1]
-            new_tj = TestJudgeEditForm(request.POST,request.FILES,instance=last_tj)
-            wow = new_tj
-            if new_tj.errors:
-                content.update({"test":new_tj})
-                return render_to_response('jforms/test.html',content)
-            new_tj = new_tj.save(commit=False)
-            if date == "":
-                new_tj.date = None
-            new_tj.pk = None
-            new_tj.stat = stat
-            new_tj.save()
-            wow.save_m2m()
+            try:
+                content.update({"testapply_name":tj.testapply.name.split("/")[-1]})
+                content.update({"testapply_url":tj.testapply.url})
+            except:
+                pass
+            try:
+                content.update({"testreport_name":tj.testreport.name.split("/")[-1]})
+                content.update({"testreport_url":tj.testreport.url})
+            except:
+                pass
+
+            content.update({"test":tjf})
+            return render_to_response('jforms/test.html',content)
+
         #log
         q1 = Q(version__isnull=False)
         q2 = Q(requirement=r)
@@ -154,22 +154,16 @@ def testjudge(request,index):
             content.update({"message":"测试评审定稿"})
             return render_to_response('jforms/message.html',content)
 
-        tj = TestJudgement.objects.filter(devjudge=dj)
-        if len(tj) == 0:
-            tj = None
-        else:
-            tj = tj[len(tj)-1]
-            content.update({"tj":tj})
-        test = TestJudgeEditForm(instance=tj)
-        content.update({"test":test})
-        return render_to_response('jforms/test.html',content)
-
     tj = TestJudgement.objects.filter(devjudge=dj)
     if len(tj) == 0:
         test = TestJudgeEditForm()
+        last_testapply = None
+        last_testreport = None
     else:
         tj = tj[len(tj)-1]
         content.update({"tj":tj})
+        last_testapply = tj.testapply
+        last_testreport = tj.testreport
         if tj.stat == "prelocked":
            content.update({"message":"测试评审暂时已经定稿，无法进行修改."})
            return render_to_response('jforms/message.html',content)
@@ -178,6 +172,18 @@ def testjudge(request,index):
            return render_to_response('jforms/message.html',content)
         test = TestJudgeEditForm(instance=tj)
     content.update({"test":test,})
+
+    try:
+        content.update({"testapply_name":last_testapply.name.split("/")[-1]})
+        content.update({"testapply_url":last_testapply.url})
+    except:
+        pass
+    try:
+        content.update({"testreport_name":last_testreport.name.split("/")[-1]})
+        content.update({"testreport_url":last_testreport.url})
+    except:
+        pass
+
     groups = Group.objects.all()
     content.update({"groups":groups})
 

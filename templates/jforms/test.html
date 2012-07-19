@@ -35,14 +35,19 @@ $(document).ready(function(){
 <label>需求表序列号：</label>
  {{index}} 
 </div>
-
+            
 <div class="form-row">
 <label></label>
-<p>
-测试申请:{{test.testapply}}</br>
-测试报告:{{test.testreport}}
-</p>
-{{test.errors.testapply}}{{test.errors.testreport}}
+<table>
+    <tr>
+    <td>测试申请:<a href ="{{testapply_url}}">{{testapply_name}}</a> </td>
+    <td><input type="file" name="testapply" /><br></td>
+    </tr>
+    <tr>
+    <td>测试报告:<a href ="{{testreport_url}}">{{testreport_name}}</a> </td>
+    <td><input type="file" name="testreport" /></td>
+    </tr>
+</table>
 </div>
 
 <div class="form-row">
