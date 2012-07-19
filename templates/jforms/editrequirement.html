@@ -59,11 +59,13 @@ $(document).ready(function(){
             <td>{{g.name}}:</td>
             <td>
             {%for u in g.user_set.all%}
+            {%if u.is_active%}
                 {%if u in req.executer.all%}
                     <input type="checkbox" checked="checked" name="executer" value="{{u.id}}" /> {{u.first_name}} 
                 {%else%}
                     <input type="checkbox" name="executer" value="{{u.id}}" /> {{u.first_name}} 
                 {%endif%}
+            {%endif%}
             {%endfor%}
             </td>
         </tr>
@@ -83,11 +85,13 @@ $(document).ready(function(){
             <td>{{g.name}}:</td>
             <td>
             {%for u in g.user_set.all%}
+            {%if u.is_active%}
                 {%if u in req.cc.all%}
                     <input type="checkbox" checked="checked" name="cc" value="{{u.id}}" /> {{u.first_name}} 
                 {%else%}
                     <input type="checkbox" name="cc" value="{{u.id}}" /> {{u.first_name}} 
                 {%endif%}
+            {%endif%}
             {%endfor%}
             </td>
         </tr>

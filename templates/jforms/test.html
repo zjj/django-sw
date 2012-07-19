@@ -90,11 +90,13 @@ if (result != "success"){$("#jj").hide();}
                         <td>{{g.name}}:</td>
                         <td>
                         {%for u in g.user_set.all%}
+                        {%if u.is_active%}
                              {%if u in tj.judges.all%}
                                     <input type="checkbox" checked="checked" name="judges" value="{{u.id}}" /> {{u.first_name}}
                              {%else%}
                                     <input type="checkbox" name="judges" value="{{u.id}}" /> {{u.first_name}}
                              {%endif%}
+                        {%endif%}
                         {%endfor%}
                         </td>
                     </tr>
