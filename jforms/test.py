@@ -18,6 +18,8 @@ def testjudge(request,index):
     content={}
     content.update({"index":index})
     content.update({"username":request.user.first_name})
+    groups = Group.objects.all()
+    content.update({"groups":groups})
     r = Requirement.objects.filter(index=index)
     r = r[len(r)-1]
 
@@ -102,7 +104,7 @@ def testjudge(request,index):
                     <a href="/viewdevjudge/%s/">查看研发评审</a>'%(index,index,index,index)
         else:
             html = u'<a href="/testjudge/%s">编辑测试评审</a> <sup><font color=red>第%s次修正</font></sup> <a href="/testjudgeview/%s">查看测试评审</a> <a href="/viewdev/%s">查看研发</a> \
-                    <a href="/viewdevjudge/%s/">查看研发评审</a> <a href="/history/%s/"><sup>历史</sup></a>'%(index,version,index,index,index,index)
+                    <a href="/viewdevjudge/%s/">查看研发评审</a> <a href="/history/%s/"><sup>历史</sup></a>'%(index,version-1,index,index,index,index)
         stat = new_tj.stat
         log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
         log.save()
@@ -160,8 +162,6 @@ def testjudge(request,index):
             content.update({"tj":tj})
         test = TestJudgeEditForm(instance=tj)
         content.update({"test":test})
-        groups = Group.objects.all()
-        content.update({"groups":groups})
         return render_to_response('jforms/test.html',content)
 
     tj = TestJudgement.objects.filter(devjudge=dj)

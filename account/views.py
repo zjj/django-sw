@@ -1,4 +1,5 @@
 # Create your views here.
+#coding=utf-8
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User,Group 
 from django import forms
@@ -73,13 +74,18 @@ def logout(request):
 
 
 def login(request):
+    content = {}
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
-        if user is not None:
+        if user is not None and user.is_active:
             auth_login(request,user)
             return HttpResponseRedirect(request.POST['next'])
+        else:
+            auth_logout(request) 
+            content.update({"message":u"您的账户暂时还没有被激活,将以匿名用户进行本站访问!"})
+            return render_to_response("jforms/message.html",content)
     try:
         next = request.GET['next']
     except KeyError:

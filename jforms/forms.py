@@ -199,8 +199,8 @@ class TestJudgeEditForm(ModelForm):
     date = forms.CharField(widget=forms.DateTimeInput(format="%Y-%m-%d",attrs={'class':"vDateField"}),label="完成时间:",required = False)
     explain = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 10}),label="解释:",required=False)
     judges = myModelMultipleChoiceField(widget=CheckboxSelectMultiple,queryset=User.objects.all(),label="评审人员:",required = False)
-    testapply = forms.FileField(required=True)
-    testreport = forms.FileField(required=True)
+    testapply = forms.FileField(required=False)
+    testreport = forms.FileField(required=False)
     class Meta:
         model = TestJudgement
         fields = ("overview","result","judgement","date","explain","judges","testapply","testreport")

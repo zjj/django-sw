@@ -153,11 +153,9 @@ def predevjudge(request,index):
                     msg.send()
                 except:
                     pass
-
-
                 content.update({"message":"预研评审已经保存,并已定稿"})
+
             return render_to_response('jforms/message.html',content)
-            
         else:
             pdj = PreDevJudgement.objects.filter(predev=d)
             if len(pdj) == 0:

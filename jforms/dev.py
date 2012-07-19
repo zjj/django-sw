@@ -51,7 +51,7 @@ def dev(request, index):
             html = u'<a href="/dev/%s/">编辑研发<a> <a href="/viewdev/%s">查看研发</a>'%(index,index)
         else:
             html = u'<a href="/dev/%s/">编辑研发<a><sup><font color=red>第%s次修正</font></sup> <a href="/viewdev/%s/">查看研发</a> \
-                    <a href="/history/%s/"><sup>历史</sup></a>'%(index,version,index,index)
+                    <a href="/history/%s/"><sup>历史</sup></a>'%(index,version-1,index,index)
         log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
         log.save()
   
@@ -62,7 +62,7 @@ def dev(request, index):
                 html = u'<a href="/devjudge/%s/">新建研发评审</a> <a href="/viewdev/%s">查看研发</a>'%(index,index)
             else:
                 html = u'<a href="/devjudge/%s/">新建研发评审</a> <sup><font color=red>第%s次修正</font></sup> \
-                        <a href="/viewdev/%s">查看研发</a> <a href="/history/%s/"><sup>历史</sup></a>'%(index,version,index,index)
+                        <a href="/viewdev/%s">查看研发</a> <a href="/history/%s/"><sup>历史</sup></a>'%(index,version-1,index,index)
             log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
             log.save()
             content.update({"message":"本次研发结束"})
@@ -148,7 +148,7 @@ def devjudge(request,index):
                 html = u'<a href="/devjudge/%s/">编辑研发评审</a> <a href="/viewdevjudge/%s/">查看研发评审</a> <a href="/viewdev/%s">查看研发</a>'%(index,index,index)
             else:
                 html = u'<a href="/devjudge/%s/">编辑研发评审</a> <sup><font color=red>第%s次修正</font></sup> <a href="/viewdevjudge/%s/">查看研发评审</a> \
-                        <a href="/viewdev/%s">查看研发</a> <a href="/history/%s/"><sup>历史</sup></a>'%(index,version,index,index,index)
+                        <a href="/viewdev/%s">查看研发</a> <a href="/history/%s/"><sup>历史</sup></a>'%(index,version-1,index,index,index)
             log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=False)
             log.save()
             if stat == "prelocked":
@@ -173,7 +173,7 @@ def devjudge(request,index):
                     html = u'研发评审中 <a href="/viewdevjudge/%s/">查看研发评审</a> <a href="/viewdev/%s">查看研发</a>'%(index,index)
                 else:
                     html = u'研发评审中 <a href="/viewdevjudge/%s/">查看研发评审</a> <a href="/viewdev/%s">查看研发</a> <sup><font color=red>第%s次修正</font></sup> \
-                            <a href="/history/%s/"><sup> 历史</sup></a>'%(index,index,version,index)
+                            <a href="/history/%s/"><sup> 历史</sup></a>'%(index,index,version-1,index)
                 log = History(requirement=r[len(r)-1],stage=stage,stat=stat,message=message,html=html,finished=False)
                 log.save()
                     
@@ -293,7 +293,7 @@ def devjudgeconfirm(request,username,index):
                         html =  u'<a href="/testjudge/%s">新建测试评审</a> <a href="/viewdev/%s">查看研发</a> <a href="/viewdevjudge/%s/">查看研发评审</a>'%(index,index,index)
                     else:
                         html =  u'<a href="/testjudge/%s">新建测试评审</a> <sup><font color=red>第%s次修正</font></sup> <a href="/viewdev/%s">查看研发</a> \
-                                    <a href="/viewdevjudge/%s/">查看研发评审</a>'%(index,version,index,index,)
+                                    <a href="/viewdevjudge/%s/">查看研发评审</a> <a href="/history/%s/"><sup> 历史</sup></a>'%(index,version-1,index,index,index)
                     log = History(requirement=r,stage=stage,stat=dj.stat,message=message,html=html,finished=False)
                     log.save()
 
@@ -304,7 +304,7 @@ def devjudgeconfirm(request,username,index):
                         html = u'<font color=green>研发完成</font> <a href="/viewdev/%s">查看研发</a> <a href="/viewdevjudge/%s/">查看研发评审</a>'%(index,index)
                     else:
                         html = u'<font color=green>研发完成</font> <a href="/viewdev/%s">查看研发</a> <a href="/viewdevjudge/%s/">查看研发评审</a> \
-                                <a href="/history/%s/"><sup> 历史</sup></a>'%(index,index,version)
+                                <a href="/history/%s/"><sup> 历史</sup></a>'%(index,index,index)
                     stat = dj.result
                     log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=True)
                     log.save()
@@ -338,7 +338,7 @@ def devjudgeconfirm(request,username,index):
                         html = u'<font color=green>研发完成</font> <a href="/viewdev/%s">查看研发</a> <a href="/viewdevjudge/%s/">查看研发评审</a>'%(index,index)
                     else:
                         html = u'<font color=green>研发完成</font> <a href="/viewdev/%s">查看研发</a> <a href="/viewdevjudge/%s/">查看研发评审</a> \
-                                <a href="/history/%s/"><sup> 历史</sup></a>'%(index,index,version)
+                                <a href="/history/%s/"><sup> 历史</sup></a>'%(index,index,index)
                     stat = dj.result
                     log = History(requirement=r,stage=stage,stat=stat,message=message,html=html,finished=True)
                     log.save()
