@@ -43,7 +43,7 @@ class Dept(models.Model):
         return unicode(self.group)
 
 class Center(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100,unique=True)
     groups = models.ManyToManyField(Dept)
     boss = models.ForeignKey(User)
     
