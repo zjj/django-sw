@@ -53,7 +53,7 @@ def process(request):
     try:
         ret = paginator.page(page)
     except PageNotAnInteger:
-        ret = paginator.page(1)
+        ret = paginator.page(paginator.num_pages)
     except EmptyPage:
         ret = paginator.page(paginator.num_pages)
     content["list"] = ret 
@@ -113,7 +113,7 @@ def filter(request):
         q4=Q()
         q5=Q()
 
-    dept = request.GET.get("dept",u"")
+    dept = request.GET.get("dept",u"none")
 
     reqs=Requirement.objects.filter(q1 & q2 & q3 & q4 & q5)
     req_set = set()
@@ -183,6 +183,13 @@ def filter(request):
          "software_list":software_list,\
          "project_list":project_list,\
          "dept_list":dept_list,})
+    
+    content["project"]=project
+    content["software_type"]=software_type
+    content["hardware"]=hardware
+    content["start_date"]=start_date
+    content["end_date"]=end_date
+    content["dept"]=dept
 
     return render_to_response("jforms/process.html",content)
 
