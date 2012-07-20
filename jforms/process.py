@@ -72,10 +72,13 @@ def process(request):
     project_list = []
     for i in all_project:
         project_list.append(i.project)
+    
+    dept_list = Dept.objects.all()
    
     content.update({"hardware_list":hardware_list,\
          "software_list":software_list,\
-         "project_list":project_list,})
+         "project_list":project_list,\
+         "dept_list":dept_list,})
 
     return render_to_response("jforms/process.html",content)
 
@@ -110,6 +113,8 @@ def filter(request):
         q4=Q()
         q5=Q()
 
+    dept = request.GET.get("dept",u"")
+
     reqs=Requirement.objects.filter(q1 & q2 & q3 & q4 & q5)
     req_set = set()
     for i in reqs:
@@ -119,7 +124,12 @@ def filter(request):
     for i in req_set:
         req = Requirement.objects.filter(index=i)
         req = req[len(req)-1]
-        reqs.append(req)
+        if dept != "none":
+            if req.author.groups.all()[0].dept_set.all()[0].id == int(dept):
+                reqs.append(req)
+        else:
+            reqs.append(req)
+            
     for i in reqs:
         each = {"requirement":i}
         try:
@@ -166,10 +176,13 @@ def filter(request):
     project_list = []
     for i in all_project:
         project_list.append(i.project)
+
+    dept_list = Dept.objects.all()
    
     content.update({"hardware_list":hardware_list,\
          "software_list":software_list,\
-         "project_list":project_list,})
+         "project_list":project_list,\
+         "dept_list":dept_list,})
 
     return render_to_response("jforms/process.html",content)
 
