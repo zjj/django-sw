@@ -121,7 +121,7 @@
 {{rjef.judges.label_tag}}
 {% for i in confirm %}
     {% if i.signed %}
-        <font color=green> {{i.user.username}},</font>
+        <font color=green> {{i.user.first_name}},</font>
     {% else %}
         <a href="/judgerequirementconfirm/{{i.user.username}}/{{index}}"> {{i.user.first_name}},</a>
     {% endif %}
