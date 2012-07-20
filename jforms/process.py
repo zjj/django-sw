@@ -53,7 +53,7 @@ def process(request):
     try:
         ret = paginator.page(page)
     except PageNotAnInteger:
-        ret = paginator.page(1)
+        ret = paginator.page(paginator.num_pages)
     except EmptyPage:
         ret = paginator.page(paginator.num_pages)
     content["list"] = ret 
