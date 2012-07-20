@@ -46,6 +46,9 @@ class Center(models.Model):
     name = models.CharField(max_length=100,unique=True)
     groups = models.ManyToManyField(Dept)
     boss = models.ForeignKey(User)
+    class Meta:
+        verbose_name = "中心"
+        verbose_name_plural = "中心"
     
     def __unicode__(self):
         return unicode(self.name)
