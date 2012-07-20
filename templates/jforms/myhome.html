@@ -21,7 +21,7 @@ td,th
 <body class="change-form">
 {% include "jforms/toolbar.html" %}
 {% if list%}
-<h1>近期申请的需求:</h1>
+<h1>您近期申请的需求:</h1>
 <br>
 <table>
           <tr> 
@@ -38,7 +38,7 @@ td,th
 {% for each in list %}
     <tr>
         <td>{{each.requirement.index}}</td>
-        <td>{{each.requirement.require_name}}</td>
+        <td>{{each.requirement.require_name|slice:":20"}}</td>
         <td>{{each.requirement.project.project}}</td>
         <td>{{each.requirement.software_type.software_type}}</td>
         <td>{{each.requirement.hardware.hardware}}</td>
@@ -60,7 +60,7 @@ td,th
 {%endif%}
 
 {% if list1 %}
-<h1>近期需要会签的需求:</h1>
+<h1>您近期需要会签的需求:</h1>
 <br>
 <table>
           <tr> 
@@ -77,7 +77,7 @@ td,th
 {% for each in list1 %}
     <tr>
         <td>{{each.requirement.index}}</td>
-        <td>{{each.requirement.require_name}}</td>
+        <td>{{each.requirement.require_name|slice:":20"}}</td>
         <td>{{each.requirement.project.project}}</td>
         <td>{{each.requirement.software_type.software_type}}</td>
         <td>{{each.requirement.hardware.hardware}}</td>

@@ -117,7 +117,7 @@ def predevjudge(request,index):
             pdj.stat = stat
             pdj.save()
             prestat =stat
-            if stat == "prelocked":
+            if stat == "prelocked" and  r.need_test and r.only_predev or ass.need_test :
                 if pdj.testapply.name == "" or pdj.testapply == None: 
                     content.update({"testapply_error":"测试申请单未上传"})
                     stat = "unlocked"
