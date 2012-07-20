@@ -26,7 +26,8 @@ td,th
 <div class="pagination">
     <span class="step-links">
         {% if list.has_previous %}
-            <a href="?page={{ list.previous_page_number }}">前一页</a>
+            <a href="?page={{ list.previous_page_number }}&project={{project}}&software_type={{software_type}}&hardware={{hardware}}&start_date={{start_date}}&end_date={{end_date}}&dept={{dept}}">前一页</a>
+
         {% endif %}
         {% if list.number %}
         <span class="current">
@@ -34,7 +35,7 @@ td,th
         </span>
         {% endif %}
         {% if list.has_next %}
-            <a href="?page={{ list.next_page_number }}">下一页</a>
+            <a href="?page={{ list.next_page_number }}&project={{project}}&software_type={{software_type}}&hardware={{hardware}}&start_date={{start_date}}&end_date={{end_date}}&dept={{dept}}">下一页</a>
         {% endif %}
     </span>
 </div>
