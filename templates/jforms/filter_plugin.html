@@ -25,6 +25,15 @@
                 <option value="{{i}}">{{i}}</option>
                 {% endfor %}
                 </select>
+
+                需求部门
+                <select name="dept">
+                <option value="none">不限</option>
+                {% for i in dept_list%}
+                <option value="{{i.id}}">{{i.group.name}}</option>
+                {% endfor %}
+                </select>
+
         </div>
         <div class="form-row">
                 需求时间
