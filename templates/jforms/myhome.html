@@ -38,7 +38,7 @@ td,th
 {% for each in list %}
     <tr>
         <td>{{each.requirement.index}}</td>
-        <td>{{each.requirement.require_name}}</td>
+        <td>{{each.requirement.require_name|slice:":20"}}</td>
         <td>{{each.requirement.project.project}}</td>
         <td>{{each.requirement.software_type.software_type}}</td>
         <td>{{each.requirement.hardware.hardware}}</td>
@@ -77,7 +77,7 @@ td,th
 {% for each in list1 %}
     <tr>
         <td>{{each.requirement.index}}</td>
-        <td>{{each.requirement.require_name}}</td>
+        <td>{{each.requirement.require_name|slice:":20"}}</td>
         <td>{{each.requirement.project.project}}</td>
         <td>{{each.requirement.software_type.software_type}}</td>
         <td>{{each.requirement.hardware.hardware}}</td>
