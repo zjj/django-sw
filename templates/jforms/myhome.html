@@ -58,7 +58,6 @@ td,th
 <br>
 </fieldset>
 {%endif%}
-
 {% if list1 %}
 <h1>您近期需要会签的需求:</h1>
 <br>
@@ -92,8 +91,48 @@ td,th
     </tr>
 {% endfor %}
 </table>
+
+<fieldset class="module aligned">
+<br>
+<br>
+</fieldset>
+{% endif %}
+
+
+{% if list2 %}
+<h1>您近期的会签历史:</h1>
+<br>
+<table>
+          <tr> 
+            <th scope="col"> <div class="text">编号</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">软件名称</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">所属项目</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">软件类型</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">硬件类型</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">需求时间</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">需求阶段</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">预研阶段</div><div class="clear"></div></th>
+            <th scope="col"> <div class="text">研发阶段</div><div class="clear"></div></th>
+        </tr>
+{% for each in list2 %}
+    <tr>
+        <td>{{each.requirement.index}}</td>
+        <td>{{each.requirement.require_name|slice:":20"}}</td>
+        <td>{{each.requirement.project.project}}</td>
+        <td>{{each.requirement.software_type.software_type}}</td>
+        <td>{{each.requirement.hardware.hardware}}</td>
+        <td>{{each.requirement.expired_date|date:"Y-m-j"}}</td>
+        <td>{{each.req.html|safe}}</td>
+        {%if each.dev.html%}
+        <td>{{each.predev.html|safe|default:"NIL"}}</td>
+        {%else%}
+        <td>{{each.predev.html|safe}}</td>
+        {%endif%}
+        <td>{{each.dev.html|safe}}</td>
+    </tr>
+{% endfor %}
+</table>
 {% endif %}
 <br>
-
 </body>
 </html>
