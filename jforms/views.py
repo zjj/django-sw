@@ -154,7 +154,9 @@ def myhome(request):
     for i in tjc:
         ret.append(i.testjudge.devjudge.dev.requirement)
 
-    reqs = ret 
+    reqs = ret
+    if len(reqs) > 10:
+        content.update({"more_signed":True}) 
     req_set = set()
     for i in reqs:
         req_set.add(i.index)
@@ -236,10 +238,68 @@ def myreqs(request):
     
     return render_to_response("jforms/myreqs.html", content)
 
+def mysigned(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/process/')
+    content = {}
+    adduser(content,request.user)
+    user = request.user
+    ret = []
+    rc = RequirementConfirm.objects.filter(signature=user,signed=True)
+    for i in rc:
+        ret.append(i.requirement)
 
+    rjc = RequireJudgementConfirm.objects.filter(user=user,signed=True)
+    for i in rjc:
+        ret.append(i.requirement)
 
+    pdjc = PreDevJudgementConfirm.objects.filter(user=user,signed=True)
+    for i in pdjc:
+        ret.append(i.predevjudge.predev.requirement)
 
+    djc = DevJudgementConfirm.objects.filter(user=user,signed=True)
+    for i in djc:
+        ret.append(i.devjudge.dev.requirement)
 
+    tjc = TestJudgementConfirm.objects.filter(signature=user,signed=True)
+    for i in tjc:
+        ret.append(i.testjudge.devjudge.dev.requirement)
+
+    reqs = ret 
+    req_set = set()
+    for i in reqs:
+        req_set.add(i.index)
+    reqs = []
+    ret = []
+    for i in req_set:
+        req = Requirement.objects.filter(index=i)
+        req = req[len(req)-1]
+        reqs.append(req)
+    for i in reqs:
+        each = {"requirement":i}
+        try:
+            rh = History.objects.filter(requirement=i,stage="requirement")
+            rh = rh[len(rh)-1]
+            each.update({"req":rh})
+        except:
+            pass
+        try: 
+            ph = History.objects.filter(requirement=i,stage="predev")
+            ph = ph[len(ph)-1]
+            each.update({"predev":ph})
+        except:
+            pass
+        try:
+            dh = History.objects.filter(requirement=i,stage="dev")
+            dh = dh[len(dh)-1]
+            each.update({"dev":dh})
+        except:
+            pass
+        ret.append(each)
+     
+    content.update({"list2":ret})  
+
+    return render_to_response("jforms/myreqs.html", content)
 
 
 
