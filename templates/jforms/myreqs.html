@@ -21,7 +21,7 @@ td,th
 <body class="change-form">
 {% include "jforms/toolbar.html" %}
 {% if list%}
-<h1>您近期申请的需求:</h1>
+<h1>您申请的需求历史:</h1>
 <br>
 <table>
           <tr> 
@@ -53,9 +53,6 @@ td,th
     </tr>
 {% endfor %}
 </table>
-{% if more_reqs%}
-   <div align=right> <a href="/myreqs/">更多...</a></div>
-{%endif%}
 <fieldset class="module aligned">
 <br>
 <br>
@@ -94,11 +91,13 @@ td,th
     </tr>
 {% endfor %}
 </table>
+
 <fieldset class="module aligned">
 <br>
 <br>
 </fieldset>
 {% endif %}
+
 
 {% if list2 %}
 <h1>您近期的会签历史:</h1>
