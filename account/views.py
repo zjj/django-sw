@@ -83,16 +83,21 @@ def login(request):
             auth_login(request,user)
             return HttpResponseRedirect(request.POST['next'])
         else:
-            auth_logout(request) 
-            content.update({"message":u"您的账户暂时还没有被激活,将以匿名用户进行本站访问!"})
-            return render_to_response("jforms/message.html",content)
+            if  user is not None and not user.is_active:
+                auth_logout(request) 
+                content.update({"message":u"您的账户暂时还没有被激活,将以匿名用户进行本站访问!"})
+                return render_to_response("jforms/message.html",content)
+            elif user is None:
+                content.update({"error":"用户名和密码不匹配"})
+ 
     try:
         next = request.GET['next']
     except KeyError:
         next = "/myhome/"
     if request.user.is_authenticated():
         return HttpResponseRedirect("/myhome/")
-    return render_to_response('account/login.html',{"next":next,})
+    content.update({"next":next,})
+    return render_to_response('account/login.html',content)
 
 def password_change(request):
     import sys
