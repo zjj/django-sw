@@ -55,6 +55,7 @@ $(document).ready(function(){
     <label></label>
     <table>
         {% for g in groups%}
+        {% if g.name == "软件部" %}
         <tr>
             <td>{{g.name}}:</td>
             <td>
@@ -69,6 +70,7 @@ $(document).ready(function(){
             {%endfor%}
             </td>
         </tr>
+        {%endif%}
         {%endfor%}
     </table>
 </div>
